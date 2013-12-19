@@ -1,5 +1,5 @@
-from numpy import reshape, max, median
-from numpy.linalg import solve, inv
+from numpy import reshape, median
+from numpy.linalg import solve
 
 
 def get_spill(text):
@@ -16,20 +16,14 @@ def get_spill(text):
     return new_spill, markers
 
 
-def compensate(npy, spill, indices=None, comp=False, scale=False):
+def compensate(npy, spill, indices=None):
     """
     Compensate numpy data 'npy' given spillover matrix 'spill'
-    and markers to compensate
-    If markers are not given, will look for fcm.annotate.text['SPILL']
+    and marker indices to compensate
     """
     data = npy.copy()
-    if indices:
+    if len(indices) > 0:
         data = data[:, indices]
-
-    if scale and not comp:
-        spill = spill / max(spill)
-    if comp:
-        spill = inv(spill)
 
     return solve(spill.T, data.T).T
 
