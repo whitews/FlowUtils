@@ -50,10 +50,10 @@ def _logicle(y, t=262144, m=4.5, r=None, w=0.5, a=0):
 
 
 def logicle(
-        npy,
+        data,
         channels,
         t,
-        m,
+        m=4.5,
         r=None,
         scale_max=1e5,
         w=0.5,
@@ -62,17 +62,17 @@ def logicle(
     """
     return logicle transformed points for channels listed
     """
-    npnts = npy.copy()
+    data_copy = data.copy()
     for i in channels:
         if r_quant:
             w = None
-            tmp = npnts[:, i]
+            tmp = data_copy[:, i]
             r = quantile(tmp[tmp < 0], 0.05)
         if r is None and w is None:
             w = 0.5
-        tmp = scale_max * _logicle(npnts[:, i].T, t, m, r, w, a)
-        npnts.T[i] = tmp
-    return npnts
+        tmp = scale_max * _logicle(data_copy[:, i].T, t, m, r, w, a)
+        data_copy.T[i] = tmp
+    return data_copy
 
 
 def eh(x, y, b, d, r):
