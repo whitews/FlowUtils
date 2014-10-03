@@ -74,6 +74,16 @@ def logicle(
     return data_copy
 
 
+def asinh(data, columns, pre_scale):
+    """
+    return asinh transformed points (after pre-scaling) for indices listed
+    """
+    data_copy = data.copy()
+    for c in columns:
+        data_copy.T[c] = numpy.arcsinh(data_copy[:, c] * pre_scale)
+    return data_copy
+
+
 def eh(x, y, b, d, r):
     e = float(d) / r
     sgn = numpy.sign(x)
