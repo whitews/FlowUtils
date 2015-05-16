@@ -23,9 +23,18 @@ def compensate(npy, spill, indices=None):
     """
     data = npy.copy()
     if len(indices) > 0:
-        data = data[:, indices]
+        comp_data = data[:, indices]
 
-    return solve(spill.T, data.T).T
+    # this does the actual compensation
+    comp_data = solve(spill.T, comp_data.T).T
+
+    # Re-insert comp'd data columns
+    if len(indices) > 0:
+        data[:, indices] = comp_data
+    else:
+        data = comp_data
+
+    return data
 
 
 def gen_spill_matrix(npy, stain_index):
