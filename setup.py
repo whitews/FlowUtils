@@ -22,7 +22,8 @@ setup(
     cmdclass={'build_ext': build_ext},
     ext_modules=[logicle_extension],
     requires=[
-        'numpy (==1.7.1)',
-        'scipy (==0.12)',
-        'Cython (==0.18)'],
+        'numpy (>=1.7.1)',
+        'scipy (>=0.12)',
+        'Cython (>=0.18)'
+    ]
 )
