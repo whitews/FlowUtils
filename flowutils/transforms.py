@@ -6,7 +6,7 @@ from scipy.optimize import brentq
 from scipy import interpolate
 import numpy
 
-import logicle as clogicle
+import flowutils.logicle as clogicle
 
 
 def quantile(x, n):

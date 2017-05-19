@@ -5,17 +5,18 @@ from Cython.Distutils import build_ext
 
 logicle_extension = Extension(
     'flowutils._logicle',
-    sources=['flowutils/logicle_ext/%s' % i for i in [
-        'Logicle.cpp',
-        'my_logicle.cpp',
-        'my_logicle_wrapper.cpp']
+    sources=[
+        'flowutils/logicle_ext/Logicle.cpp',
+        'flowutils/logicle_ext/my_logicle.cpp',
+        'flowutils/my_logicle_wrap.cxx'
     ],
+
     include_dirs=[get_include()]
 )
 
 setup(
     name='FlowUtils',
-    version='0.3',
+    version='0.4',
     packages=['flowutils'],
     package_data={'': []},
     description='Flow Cytometry Standard Utilities',

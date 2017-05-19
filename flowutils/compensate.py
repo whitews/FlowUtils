@@ -12,7 +12,7 @@ def get_spill(text):
     markers = spill[1:(n + 1)]
     markers = [item.strip().replace('\n', '') for item in markers]
     items = [item.strip().replace('\n', '') for item in spill[n + 1:]]
-    new_spill = reshape(map(float, items), (n, n))
+    new_spill = reshape(list(map(float, items)), (n, n))
     return new_spill, markers
 
 
