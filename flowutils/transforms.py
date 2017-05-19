@@ -6,7 +6,7 @@ from scipy.optimize import brentq
 from scipy import interpolate
 import numpy
 
-import flowutils.logicle as clogicle
+import flowutils.logicle as c_logicle
 
 
 def quantile(x, n):
@@ -27,7 +27,8 @@ def product_log(x):
         lxl = numpy.log(x + 1.0)
         return 0.665 * (1 + 0.0195 * lxl) * lxl + 0.04
     else:
-        return numpy.log(x - 4.0) - (1.0 - 1.0 / numpy.log(x)) * numpy.log(numpy.log(x))
+        return numpy.log(x - 4.0) - \
+               (1.0 - 1.0 / numpy.log(x)) * numpy.log(numpy.log(x))
 
 
 def s(x, y, t, m, w):
@@ -45,7 +46,8 @@ def _logicle(y, t=262144, m=4.5, r=None, w=0.5, a=0):
         else:
             w = (m - numpy.log10(t / numpy.abs(r))) / 2.0
 
-    clogicle.logicle_scale(t, w, m, a, y)
+    # noinspection PyUnresolvedReferences
+    c_logicle.logicle_scale(t, w, m, a, y)
     return y
 
 
@@ -118,10 +120,10 @@ def hyperlog(npy, channels, b, d, r):
 
 
 def log_transform(npy, channels):
-    npnts = npy.copy()
+    n_points = npy.copy()
     for i in channels:
-        npnts[:, i] = _log_transform(npnts[:, i])
-    return npnts
+        n_points[:, i] = _log_transform(n_points[:, i])
+    return n_points
 
 
 def _log_transform(npnts):

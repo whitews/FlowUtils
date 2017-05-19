@@ -24,6 +24,8 @@ def compensate(npy, spill, indices=None):
     data = npy.copy()
     if len(indices) > 0:
         comp_data = data[:, indices]
+    else:
+        comp_data = data
 
     # this does the actual compensation
     comp_data = solve(spill.T, comp_data.T).T
