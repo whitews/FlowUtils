@@ -6,8 +6,7 @@ from scipy.optimize import brentq
 from scipy import interpolate
 import numpy
 
-import flowutils.logicle as c_logicle
-
+import _logicle as c_logicle
 
 def quantile(x, n):
     """return the lower nth quantile"""
@@ -54,7 +53,7 @@ def _logicle(y, t=262144, m=4.5, r=None, w=0.5, a=0):
 def logicle(
         data,
         channels,
-        t,
+        t=262144,
         m=4.5,
         r=None,
         w=0.5,
@@ -64,6 +63,8 @@ def logicle(
     return logicle transformed points for channels listed
     """
     data_copy = data.copy()
+
+    # run logicle scale for each channel separately
     for i in channels:
         if r_quant:
             w = None
