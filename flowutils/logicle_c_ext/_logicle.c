@@ -37,12 +37,31 @@ static PyMethodDef module_methods[] = {
     {NULL, NULL, 0, NULL}
 };
 
-PyMODINIT_FUNC init_logicle(void) {
-    PyObject *m = Py_InitModule3("_logicle", module_methods, NULL);
+#if PY_MAJOR_VERSION >= 3
+static struct PyModuleDef logicledef = {
+        PyModuleDef_HEAD_INIT,
+        "logicle_c",
+        NULL,
+        -1,
+        module_methods
+};
+#endif
+
+#if PY_MAJOR_VERSION >= 3
+PyMODINIT_FUNC PyInit_logicle_c(void) {
+    PyObject *m = PyModule_Create(&logicledef);
+#else
+PyMODINIT_FUNC initlogicle_c(void) {
+    PyObject *m = Py_InitModule3("logicle_c", module_methods, NULL);
+#endif
 
     if (m == NULL) {
-        return;
+        return NULL;
     }
 
     import_array();
+
+#if PY_MAJOR_VERSION >= 3
+    return m;
+#endif
 }

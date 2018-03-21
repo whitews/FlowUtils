@@ -2,10 +2,10 @@ from distutils.core import setup, Extension
 from numpy import get_include
 
 logicle_extension = Extension(
-    'flowutils._logicle',
+    'flowutils.logicle_c',
     sources=[
-        'flowutils/logicle_c/_logicle.c',
-        'flowutils/logicle_c/logicle.c'
+        'flowutils/logicle_c_ext/_logicle.c',
+        'flowutils/logicle_c_ext/logicle.c'
     ],
     include_dirs=[get_include()]
 )
