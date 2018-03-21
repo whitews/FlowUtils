@@ -6,7 +6,8 @@ from scipy.optimize import brentq
 from scipy import interpolate
 import numpy
 
-import _logicle as c_logicle
+from flowutils import logicle_c
+
 
 def quantile(x, n):
     """return the lower nth quantile"""
@@ -46,7 +47,7 @@ def _logicle(y, t=262144, m=4.5, r=None, w=0.5, a=0):
             w = (m - numpy.log10(t / numpy.abs(r))) / 2.0
 
     # noinspection PyUnresolvedReferences
-    c_logicle.logicle_scale(t, w, m, a, y)
+    logicle_c.logicle_scale(t, w, m, a, y)
     return y
 
 
