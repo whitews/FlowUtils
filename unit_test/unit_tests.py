@@ -1,11 +1,6 @@
-"""
-Unit test framework
-"""
-
 import unittest
 
-# include all the TestCase imports here
-from .test_flowutils import FlowUtilsTestCase
+from .transforms_unit_tests import LogicleTestCase
 
 if __name__ == "__main__":
     unittest.main()
