@@ -22,6 +22,10 @@ struct logicle_params
 const int TAYLOR_LENGTH = 16;
 
 double solve (double b, double w) {
+
+	double delta;
+	double df, t;
+
 	// w == 0 means its really arcsinh
 	if (w == 0)
 		return b;
@@ -37,7 +41,6 @@ double solve (double b, double w) {
 	// bisection first step
 	double d = (d_lo + d_hi) / 2;
 	double last_delta = d_hi - d_lo;
-	double delta;
 
 	// evaluate the f(w,b) = 2 * (ln(d) - ln(b)) + w * (b + d)
 	// and its derivative
@@ -48,12 +51,12 @@ double solve (double b, double w) {
 	for (int i = 1; i < 40; ++i)
 	{
 		// compute the derivative
-		double df = 2 / d + w;
+		df = 2 / d + w;
 
 		// if Newton's method would step outside the bracket
 		// or if it isn't converging quickly enough
 		if (((d - d_hi) * df - f) * ((d - d_lo) * df - f) >= 0
-			|| abs(1.9 * f) > abs(last_delta * df))
+			|| fabs(1.9 * f) > fabs(last_delta * df))
 		{
 			// take a bisection step
 			delta = (d_hi - d_lo) / 2;
@@ -65,13 +68,13 @@ double solve (double b, double w) {
 		{
 			// otherwise take a Newton's method step
 			delta = f / df;
-			double t = d;
+			t = d;
 			d -= delta;
 			if (d == t)
 				return d; // nothing changed, we're done
 		}
 		// if we've reached the desired precision we're done
-		if (abs(delta) < tolerance)
+		if (fabs(delta) < tolerance)
 			return d;
 		last_delta = delta;
 
@@ -87,8 +90,6 @@ double solve (double b, double w) {
 		else
 			d_hi = d;
 	}
-
-	// TODO: do something if we get here, did not converge, max iter exceeded
 }
 
 double seriesBiexponential (struct logicle_params p, double scale) {
@@ -148,7 +149,7 @@ double scale (struct logicle_params p, double value) {
 		x -= delta;
 
 		// if we've reached the desired precision we're done
-		if (abs(delta) < tolerance) {
+		if (fabs(delta) < tolerance) {
 			// handle negative arguments
 			if (negative)
 				return 2 * p.x1 - x;
