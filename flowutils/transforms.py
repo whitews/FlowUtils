@@ -2,8 +2,6 @@
 Various transforms for FCS data
 """
 
-from scipy.optimize import brentq
-from scipy import interpolate
 import numpy
 
 from flowutils import logicle_c
@@ -86,39 +84,6 @@ def asinh(data, columns, pre_scale):
     for c in columns:
         data_copy.T[c] = numpy.arcsinh(data_copy[:, c] * pre_scale)
     return data_copy
-
-
-def eh(x, y, b, d, r):
-    e = float(d) / r
-    sgn = numpy.sign(x)
-    return sgn * 10 ** (sgn * e * x) + b * e * x - sgn - y
-
-
-def hyperlog0(y, b, d, r):
-    return brentq(eh, -10 ** 6, 10 ** 6, (y, b, d, r))
-
-hyperlog0 = numpy.vectorize(hyperlog0)
-
-
-def _hyperlog(y, b, d, r, order=2, intervals=1000.0):
-    ub = numpy.log(numpy.max(y) + 1 - numpy.min(y))
-    xx = numpy.exp(numpy.arange(0, ub[0], ub / intervals)) - 1 + numpy.min(y)
-    yy = hyperlog0(xx, b, d, r)
-    t = interpolate.splrep(xx, yy, k=order)
-    return interpolate.splev(y, t)
-
-
-def hyperlog(npy, channels, b, d, r):
-    npnts = npy.copy()
-    for i in channels:
-        npnts.T[i] = _hyperlog(
-            npnts[:, i].T,
-            b,
-            d,
-            r,
-            order=2,
-            intervals=1000.0)
-    return npy
 
 
 def log_transform(npy, channels):
