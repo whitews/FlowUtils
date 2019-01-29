@@ -12,7 +12,8 @@ logicle_extension = Extension(
         'flowutils/logicle_c_ext/_logicle.c',
         'flowutils/logicle_c_ext/logicle.c'
     ],
-    include_dirs=[get_include(), 'flowutils/logicle_c_ext']
+    include_dirs=[get_include(), 'flowutils/logicle_c_ext'],
+    extra_compile_args=['-std=c99']
 )
 
 setup(
