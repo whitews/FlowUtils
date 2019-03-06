@@ -1,5 +1,4 @@
-from numpy import reshape, median
-from numpy.linalg import solve
+import numpy as np
 
 
 def get_spill(text):
@@ -12,7 +11,7 @@ def get_spill(text):
     markers = spill[1:(n + 1)]
     markers = [item.strip().replace('\n', '') for item in markers]
     items = [item.strip().replace('\n', '') for item in spill[n + 1:]]
-    new_spill = reshape(list(map(float, items)), (n, n))
+    new_spill = np.reshape(list(map(float, items)), (n, n))
     return new_spill, markers
 
 
@@ -28,7 +27,7 @@ def compensate(npy, spill, indices=None):
         comp_data = data
 
     # this does the actual compensation
-    comp_data = solve(spill.T, comp_data.T).T
+    comp_data = np.linalg.solve(spill.T, comp_data.T).T
 
     # Re-insert comp'd data columns
     if len(indices) > 0:
@@ -53,6 +52,6 @@ def gen_spill_matrix(npy, stain_index):
             spill.append(0.0)
             continue
         else:
-            spill.append(median(column))
+            spill.append(np.median(column))
         
     return spill

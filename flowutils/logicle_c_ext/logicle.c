@@ -15,6 +15,8 @@ struct logicle_params
     double xTaylor;
     double *taylor;
 
+    double inverse;  // for hyperlog only
+
     double *lookup;
     int bins;
 };
@@ -223,5 +225,129 @@ void logicle_scale(double T, double W, double M, double A, double* x, int n) {
 
 	for(int j=0;j<n;j++) {
 		x[j] = scale(p, x[j]);
+	}
+}
+
+
+double hyperscale (struct logicle_params p, double value) {
+	// handle true zero separately
+	if (value == 0)
+		return p.x1;
+
+	// reflect negative values
+	bool negative = value < 0;
+	if (negative)
+		value = -value;
+
+	// initial guess at solution
+	double x;
+	if (value < p.inverse)
+		x = p.x1 + value * p.w / p.inverse;
+	else
+		// otherwise use ordinary logarithm
+		x = log(value / p.a) / p.b;
+
+	// try for double precision unless in extended range
+	double tolerance = 3 * DBL_EPSILON;
+
+	for (int i = 0; i < 10; ++i)
+	{
+		double ae2bx = p.a * exp(p.b * x);
+		double y;
+		if (x < p.xTaylor)
+			// near zero use the Taylor series
+			y = seriesBiexponential(p, x) - value;
+		else
+			// this formulation has better round-off behavior
+			y = (ae2bx + p.c * x) - (p.f + value);
+
+		double abe2bx = p.b * ae2bx;
+		double dy = abe2bx + p.c;
+		double ddy = p.b * abe2bx;
+
+		// this is Halley's method with cubic convergence
+		double delta = y / (dy * (1 - y * ddy / (2 * dy * dy)));
+		x -= delta;
+
+		// if we've reached the desired precision we're done
+		if (fabs(delta) < tolerance) {
+			// handle negative arguments
+			if (negative)
+				return 2 * p.x1 - x;
+			else
+				return x;
+		}
+	}
+
+	// TODO: do something if we get here, scale did not converge
+};
+
+
+void hyperlog_scale(double T, double W, double M, double A, double* x, int n) {
+	// allocate the parameter structure
+	struct logicle_params p;
+
+	// standard parameters
+	p.T = T;
+	p.M = M;
+	p.W = W;
+	p.A = A;
+
+	// actual parameters
+	p.w = W / (M + A);
+	p.x2 = A / (M + A);
+
+	p.x1 = p.x2 + p.w;
+	p.x0 = p.x2 + 2 * p.w;
+
+	p.b = (M + A) * log(10);
+	double e0 = exp(p.b * p.x0);
+
+	double c_a = e0 / p.w;
+	double f_a = exp(p.b * p.x1) + c_a * p.x1;
+	p.a = T / (exp(p.b) + c_a - f_a);
+
+	p.c = c_a * p.a;
+	p.f = f_a * p.a;
+
+	// use Taylor series near x1, i.e., data zero to
+	// avoid round off problems of formal definition
+	p.xTaylor = p.x1 + p.w / 4;
+
+	// compute coefficients of the Taylor series
+	double coef = p.a * exp(p.b * p.x1);
+
+	// 16 is enough for full precision of typical scales
+	double tmp_taylor[TAYLOR_LENGTH];
+	p.taylor = tmp_taylor;
+
+	for (int i = 0; i < TAYLOR_LENGTH; ++i)
+	{
+		coef *= p.b / (i + 1);
+		(p.taylor)[i] = coef;
+	}
+
+	p.taylor[0] += p.c;
+
+	bool is_negative = p.x0 < p.x1;
+	double tmp_x0;
+	if (is_negative) {
+	    tmp_x0 = 2 * p.x1 - p.x0;
+	} else {
+	    tmp_x0 = p.x0;
+	}
+
+	if (tmp_x0 < p.xTaylor) {
+	    p.inverse = seriesBiexponential(p, tmp_x0);
+	} else {
+	    p.inverse = (p.a * exp(p.b * tmp_x0) + p.c * tmp_x0);
+	}
+
+	if (is_negative) {
+	    p.inverse = -p.inverse;
+	}
+
+	for(int j = 0; j < n; j++) {
+		x[j] = hyperscale(p, x[j]);
 	}
 }

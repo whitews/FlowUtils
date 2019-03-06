@@ -2,7 +2,7 @@
 Various transforms for FCS data
 """
 
-import numpy
+import numpy as np
 
 from flowutils import logicle_c
 
@@ -22,27 +22,27 @@ def product_log(x):
     """
     #  fast estimate with closed-form approximation
     if x <= 500:
-        lxl = numpy.log(x + 1.0)
+        lxl = np.log(x + 1.0)
         return 0.665 * (1 + 0.0195 * lxl) * lxl + 0.04
     else:
-        return numpy.log(x - 4.0) - \
-               (1.0 - 1.0 / numpy.log(x)) * numpy.log(numpy.log(x))
+        return np.log(x - 4.0) - \
+               (1.0 - 1.0 / np.log(x)) * np.log(np.log(x))
 
 
 def s(x, y, t, m, w):
-    p = w / (2 * product_log(0.5 * numpy.exp(-w / 2) * w))
-    sgn = numpy.sign(x - w)
+    p = w / (2 * product_log(0.5 * np.exp(-w / 2) * w))
+    sgn = np.sign(x - w)
     xw = sgn * (x - w)
-    return sgn * t * numpy.exp(-(m - w)) * (numpy.exp(xw) - p ** 2 * numpy.exp(-xw / p) + p ** 2 - 1) - y
+    return sgn * t * np.exp(-(m - w)) * (np.exp(xw) - p ** 2 * np.exp(-xw / p) + p ** 2 - 1) - y
 
 
 def _logicle(y, t=262144, m=4.5, r=None, w=0.5, a=0):
-    y = numpy.array(y, dtype='double')
+    y = np.array(y, dtype='double')
     if w is None:  # we need an r then...
         if r == 0:
             w = 1  # don't like this but it works... FIX!
         else:
-            w = (m - numpy.log10(t / numpy.abs(r))) / 2.0
+            w = (m - np.log10(t / np.abs(r))) / 2.0
 
     # noinspection PyUnresolvedReferences
     logicle_c.logicle_scale(t, w, m, a, y)
@@ -76,13 +76,41 @@ def logicle(
     return data_copy
 
 
+def _hyperlog(y, t=262144, m=4.5, w=0.5, a=0):
+    y = np.array(y, dtype='double')
+
+    # noinspection PyUnresolvedReferences
+    logicle_c.hyperlog_scale(t, w, m, a, y)
+    return y
+
+
+def hyperlog(
+        data,
+        channels,
+        t=262144,
+        m=4.5,
+        w=0.5,
+        a=0,
+):
+    """
+    return hyperlog transformed points for channels listed
+    """
+    data_copy = data.copy()
+
+    # run hyperlog scale for each channel separately
+    for i in channels:
+        tmp = _hyperlog(data_copy[:, i].T, t, m, w, a)
+        data_copy.T[i] = tmp
+    return data_copy
+
+
 def asinh(data, columns, pre_scale):
     """
     return asinh transformed points (after pre-scaling) for indices listed
     """
     data_copy = data.copy()
     for c in columns:
-        data_copy.T[c] = numpy.arcsinh(data_copy[:, c] * pre_scale)
+        data_copy.T[c] = np.arcsinh(data_copy[:, c] * pre_scale)
     return data_copy
 
 
@@ -94,4 +122,4 @@ def log_transform(npy, channels):
 
 
 def _log_transform(npnts):
-    return numpy.where(npnts <= 1, 0, numpy.log10(npnts))
+    return np.where(npnts <= 1, 0, np.log10(npnts))
