@@ -210,7 +210,7 @@ void logicle_scale(double T, double W, double M, double A, double* x, int n) {
 	double negCoef = -p.c / exp(p.d * p.x1);
 
 	// 16 is enough for full precision of typical scales
-	double tmp_taylor[TAYLOR_LENGTH];
+	double tmp_taylor[16];
 	p.taylor = tmp_taylor;
 
 	for (int i = 0; i < TAYLOR_LENGTH; ++i)
@@ -318,7 +318,7 @@ void hyperlog_scale(double T, double W, double M, double A, double* x, int n) {
 	double coef = p.a * exp(p.b * p.x1);
 
 	// 16 is enough for full precision of typical scales
-	double tmp_taylor[TAYLOR_LENGTH];
+	double tmp_taylor[16];
 	p.taylor = tmp_taylor;
 
 	for (int i = 0; i < TAYLOR_LENGTH; ++i)
