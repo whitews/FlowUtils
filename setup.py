@@ -2,8 +2,7 @@ from setuptools import setup, Extension
 try:
     from numpy import get_include
 except ImportError:
-    raise RuntimeError(
-        "NumPy is required to build the C extension in FlowUtils")
+    raise RuntimeError("NumPy is required to build the C extension in FlowUtils")
 
 
 logicle_extension = Extension(

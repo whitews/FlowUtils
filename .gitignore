@@ -2,3 +2,4 @@
 *.pyc
 *.so
 build
+*.egg-info
