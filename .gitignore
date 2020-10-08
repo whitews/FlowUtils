@@ -1,5 +1,15 @@
+# User-specific stuff:
 .idea
+
+# Compiled Python & C extensions
 *.pyc
 *.so
-build
-*.egg-info
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+wheels/
+*.egg-info/
+*.egg
