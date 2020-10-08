@@ -32,6 +32,36 @@ static PyObject *wrap_logicle_scale(PyObject *self, PyObject *args) {
     return x_array;
 }
 
+static PyObject *wrap_logicle_inverse(PyObject *self, PyObject *args) {
+    double t, w, m, a;
+    PyObject *x;
+
+    // parse the input args tuple
+    if (!PyArg_ParseTuple(args, "ddddO", &t, &w, &m, &a, &x)) {
+        return NULL;
+    }
+
+    // read the numpy array
+    PyObject *x_array = PyArray_FROM_OTF(x, NPY_DOUBLE, NPY_IN_ARRAY);
+
+    // throw exception if the array doesn't exist
+    if (x_array == NULL) {
+        Py_XDECREF(x_array);
+        return NULL;
+    }
+
+    // get length of input array
+    int n = (int)PyArray_DIM(x_array, 0);
+
+    // get pointers to the data as C-type
+    double *xc    = (double*)PyArray_DATA(x_array);
+
+    // now we can call our function!
+    logicle_inverse(t, w, m, a, xc, n);
+
+    return x_array;
+}
+
 static PyObject *wrap_hyperlog_scale(PyObject *self, PyObject *args) {
     double t, w, m, a;
     PyObject *x;
@@ -64,6 +94,7 @@ static PyObject *wrap_hyperlog_scale(PyObject *self, PyObject *args) {
 
 static PyMethodDef module_methods[] = {
     {"logicle_scale", wrap_logicle_scale, METH_VARARGS, NULL},
+    {"logicle_inverse", wrap_logicle_inverse, METH_VARARGS, NULL},
     {"hyperlog_scale", wrap_hyperlog_scale, METH_VARARGS, NULL},
     {NULL, NULL, 0, NULL}
 };

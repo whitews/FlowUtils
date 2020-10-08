@@ -228,6 +228,91 @@ void logicle_scale(double T, double W, double M, double A, double* x, int n) {
 	}
 }
 
+double logicle_inverse_scale (struct logicle_params p, double value) {
+	// reflect negative scale regions
+	bool negative = value < p.x1;
+	if (negative)
+		value = 2 * p.x1 - value;
+
+	// compute the bi-exponential
+	double inverse;
+	if (value < p.xTaylor)
+		// near x1, i.e., data zero use the series expansion
+		inverse = seriesBiexponential(p, value);
+	else
+		// this formulation has better round-off behavior
+		inverse = (p.a * exp(p.b * value) + p.f) - p.c / exp(p.d * value);
+
+	// handle scale for negative values
+	if (negative)
+		return -inverse;
+	else
+		return inverse;
+};
+
+void logicle_inverse(double T, double W, double M, double A, double* x, int n) {
+	// allocate the parameter structure
+	struct logicle_params p;
+	p.taylor = 0;
+
+    // TODO: move these checks to Python
+//	if (T <= 0)
+//		throw IllegalParameter("T is not positive");
+//	if (W <= 0)
+//		throw IllegalParameter("W is not positive");
+//	if (M <= 0)
+//		throw IllegalParameter("M is not positive");
+//	if (2 * W > M)
+//		throw IllegalParameter("W is too large");
+//	if (-A > W || A + W > M - W)
+//		throw IllegalParameter("A is too large");
+
+	// standard parameters
+	p.T = T;
+	p.M = M;
+	p.W = W;
+	p.A = A;
+
+	// actual parameters
+	// formulas from bi-exponential paper
+	p.w = W / (M + A);
+	p.x2 = A / (M + A);
+	p.x1 = p.x2 + p.w;
+	p.x0 = p.x2 + 2 * p.w;
+	p.b = (M + A) * log(10.);
+	p.d = solve(p.b, p.w);
+	double c_a = exp(p.x0 * (p.b + p.d));
+	double mf_a = exp(p.b * p.x1) - c_a / exp(p.d * p.x1);
+	p.a = T / ((exp(p.b) - mf_a) - c_a / exp(p.d));
+	p.c = c_a * p.a;
+	p.f = -mf_a * p.a;
+
+	// use Taylor series near x1, i.e., data zero to
+	// avoid round off problems of formal definition
+	p.xTaylor = p.x1 + p.w / 4;
+
+	// compute coefficients of the Taylor series
+	double posCoef = p.a * exp(p.b * p.x1);
+	double negCoef = -p.c / exp(p.d * p.x1);
+
+	// 16 is enough for full precision of typical scales
+	double tmp_taylor[16];
+	p.taylor = tmp_taylor;
+
+	for (int i = 0; i < TAYLOR_LENGTH; ++i)
+	{
+		posCoef *= p.b / (i + 1);
+		negCoef *= -p.d / (i + 1);
+		(p.taylor)[i] = posCoef + negCoef;
+	}
+	p.taylor[1] = 0; // exact result of Logicle condition
+
+	// end original initialize method
+
+	for(int j=0;j<n;j++) {
+		x[j] = logicle_inverse_scale(p, x[j]);
+	}
+}
 
 double hyperscale (struct logicle_params p, double value) {
 	// handle true zero separately
