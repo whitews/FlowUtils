@@ -16,27 +16,6 @@ def quantile(x, n):
         return 0
 
 
-def product_log(x):
-    """
-    Product logarithm or LambertW function computes principal solution
-    for w in f(w) = w*exp(w).
-    """
-    #  fast estimate with closed-form approximation
-    if x <= 500:
-        lxl = np.log(x + 1.0)
-        return 0.665 * (1 + 0.0195 * lxl) * lxl + 0.04
-    else:
-        return np.log(x - 4.0) - \
-               (1.0 - 1.0 / np.log(x)) * np.log(np.log(x))
-
-
-def s(x, y, t, m, w):
-    p = w / (2 * product_log(0.5 * np.exp(-w / 2) * w))
-    sgn = np.sign(x - w)
-    xw = sgn * (x - w)
-    return sgn * t * np.exp(-(m - w)) * (np.exp(xw) - p ** 2 * np.exp(-xw / p) + p ** 2 - 1) - y
-
-
 def _logicle(y, t=262144, m=4.5, r=None, w=0.5, a=0):
     y = np.array(y, dtype='double')
     if w is None:  # we need an r then...
