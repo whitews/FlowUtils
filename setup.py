@@ -19,7 +19,7 @@ logicle_extension = Extension(
 
 setup(
     name='FlowUtils',
-    version='0.8.0b',
+    version='0.8.0',
     packages=['flowutils'],
     package_data={'': []},
     description='Flow Cytometry Standard Utilities',
