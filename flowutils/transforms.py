@@ -8,8 +8,8 @@ import numpy as np
 from . import logicle_c
 
 
-def quantile(x, n):
-    """return the lower nth quantile"""
+def _quantile(x, n):
+    """return the lower nth _quantile"""
     try:
         return sorted(x)[int(n * len(x))]
     except IndexError:
@@ -61,7 +61,7 @@ def logicle(
         if r_quant:
             w = None
             tmp = data_copy[:, i]
-            r = quantile(tmp[tmp < 0], 0.05)
+            r = _quantile(tmp[tmp < 0], 0.05)
         if r is None and w is None:
             w = 0.5
         tmp = _logicle(data_copy[:, i].T, t, m, r, w, a)
@@ -88,7 +88,7 @@ def logicle_inverse(
         if r_quant:
             w = None
             tmp = data_copy[:, i]
-            r = quantile(tmp[tmp < 0], 0.05)
+            r = _quantile(tmp[tmp < 0], 0.05)
         if r is None and w is None:
             w = 0.5
         tmp = _logicle_inverse(data_copy[:, i].T, t, m, r, w, a)
