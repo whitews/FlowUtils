@@ -5,7 +5,7 @@ Various transforms for FCS data
 import numpy as np
 
 # noinspection PyUnresolvedReferences
-from flowutils import logicle_c
+from . import logicle_c
 
 
 def quantile(x, n):
