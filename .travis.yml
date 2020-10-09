@@ -1,5 +1,10 @@
 dist: xenial
 language: python
+before_install:
+  - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
+  - sudo apt-get update -q
+  - sudo apt-get install -y gcc-7
+  - export CC=/usr/bin/gcc-7
 python:
   - "2.7"
   - "3.6"
@@ -7,6 +12,7 @@ python:
   - "3.8"
 install:
   - pip install codecov
+  - python setup.py build_ext --inplace
 script:
   - coverage run --source flowutils --omit="flowutils/tests/*" run_tests.py
 
