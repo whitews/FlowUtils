@@ -1,5 +1,13 @@
 # FlowUtils
 
+[![PyPI license](https://img.shields.io/pypi/l/flowutils.svg?colorB=dodgerblue)](https://pypi.python.org/pypi/flowutils/)
+[![PyPI pyversions](https://img.shields.io/pypi/pyversions/flowutils.svg)](https://pypi.python.org/pypi/flowutils/)
+[![PyPI version](https://img.shields.io/pypi/v/flowutils.svg?colorB=blue)](https://pypi.python.org/pypi/flowutils/)
+
+[![Build Status](https://travis-ci.com/whitews/FlowUtils.svg?branch=master)](https://travis-ci.com/whitews/FlowUtils)
+[![Coverage](https://codecov.io/gh/whitews/FlowUtils/branch/master/graph/badge.svg)](https://codecov.io/gh/whitews/flowutils)
+
+
 A Python library for performing common functions on flow cytometry data, 
 such as compensation and transformations.
 
