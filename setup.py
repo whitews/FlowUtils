@@ -4,6 +4,8 @@ try:
 except ImportError:
     raise RuntimeError("NumPy is required to build the C extension in FlowUtils")
 
+with open("README.md", "r") as fh:
+    long_description = fh.read()
 
 logicle_extension = Extension(
     'flowutils.logicle_c',
@@ -17,11 +19,22 @@ logicle_extension = Extension(
 
 setup(
     name='FlowUtils',
-    version='0.7.1',
+    version='0.8.0b',
     packages=['flowutils'],
     package_data={'': []},
     description='Flow Cytometry Standard Utilities',
+    long_description=long_description,
+    long_description_content_type="text/markdown",
+    author='Scott White',
     license='BSD',
+    url="https://github.com/whitews/flowutils",
     ext_modules=[logicle_extension],
-    install_requires=['numpy>=1.7']
+    install_requires=['numpy>=1.7'],
+    data_files=[("", ["LICENSE"])],
+    classifiers=[
+        'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 2.7'
+    ]
 )
