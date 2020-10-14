@@ -124,6 +124,34 @@ def hyperlog(
     return data_copy
 
 
+def _hyperlog_inverse(y, t=262144, m=4.5, w=0.5, a=0):
+    y = np.array(y, dtype='double')
+
+    # noinspection PyUnresolvedReferences
+    logicle_c.hyperlog_inverse(t, w, m, a, y)
+    return y
+
+
+def hyperlog_inverse(
+        data,
+        channels,
+        t=262144,
+        m=4.5,
+        w=0.5,
+        a=0,
+):
+    """
+    return hyperlog transformed points for channels listed
+    """
+    data_copy = data.copy()
+
+    # run hyperlog scale for each channel separately
+    for i in channels:
+        tmp = _hyperlog_inverse(data_copy[:, i].T, t, m, w, a)
+        data_copy.T[i] = tmp
+    return data_copy
+
+
 def asinh(data, columns, pre_scale):
     """
     return asinh transformed points (after pre-scaling) for indices listed

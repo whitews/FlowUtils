@@ -446,3 +446,76 @@ void hyperlog_scale(double T, double W, double M, double A, double* x, int n) {
 		x[j] = hyperscale(p, x[j]);
 	}
 }
+
+double hyperscale_inverse (struct logicle_params p, double value)
+	{
+		// reflect negative scale regions
+		bool negative = value < p.x1;
+		if (negative)
+			value = 2 * p.x1 - value;
+
+		double inverse;
+		if (value < p.xTaylor)
+			// near x1, i.e., data zero use the series expansion
+			inverse = taylorSeries(p, value);
+		else
+			// this formulation has better roundoff behavior
+			inverse = (p.a * exp(p.b * value) + p.c * value) - p.f;
+
+		// handle scale for negative values
+		if (negative)
+			return -inverse;
+		else
+			return inverse;
+	}
+
+void hyperlog_inverse(double T, double W, double M, double A, double* x, int n) {
+	// allocate the parameter structure
+	struct logicle_params p;
+
+	// standard parameters
+	p.T = T;
+	p.M = M;
+	p.W = W;
+	p.A = A;
+
+	// actual parameters
+	p.w = W / (M + A);
+	p.x2 = A / (M + A);
+
+	p.x1 = p.x2 + p.w;
+	p.x0 = p.x2 + 2 * p.w;
+
+	p.b = (M + A) * log(10);
+	double e0 = exp(p.b * p.x0);
+
+	double c_a = e0 / p.w;
+	double f_a = exp(p.b * p.x1) + c_a * p.x1;
+	p.a = T / (exp(p.b) + c_a - f_a);
+
+	p.c = c_a * p.a;
+	p.f = f_a * p.a;
+
+	// use Taylor series near x1, i.e., data zero to
+	// avoid round off problems of formal definition
+	p.xTaylor = p.x1 + p.w / 4;
+
+	// compute coefficients of the Taylor series
+	double coef = p.a * exp(p.b * p.x1);
+
+	// 16 is enough for full precision of typical scales
+	double tmp_taylor[16];
+	p.taylor = tmp_taylor;
+
+	for (int i = 0; i < TAYLOR_LENGTH; ++i)
+	{
+		coef *= p.b / (i + 1);
+		(p.taylor)[i] = coef;
+	}
+
+	p.taylor[0] += p.c;
+
+	for(int j = 0; j < n; j++) {
+		x[j] = hyperscale_inverse(p, x[j]);
+	}
+}
