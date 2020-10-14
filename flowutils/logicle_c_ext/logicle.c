@@ -314,6 +314,16 @@ void logicle_inverse(double T, double W, double M, double A, double* x, int n) {
 	}
 }
 
+double taylorSeries (struct logicle_params p, double scale)
+	{
+		// Taylor series is around x1
+		double x = scale - p.x1;
+		double sum = p.taylor[TAYLOR_LENGTH - 1] * x;
+		for (int i = TAYLOR_LENGTH - 2; i >= 0; --i)
+			sum = (sum + p.taylor[i]) * x;
+		return sum;
+	}
+
 double hyperscale (struct logicle_params p, double value) {
 	// handle true zero separately
 	if (value == 0)
@@ -341,7 +351,7 @@ double hyperscale (struct logicle_params p, double value) {
 		double y;
 		if (x < p.xTaylor)
 			// near zero use the Taylor series
-			y = seriesBiexponential(p, x) - value;
+			y = taylorSeries(p, x) - value;
 		else
 			// this formulation has better round-off behavior
 			y = (ae2bx + p.c * x) - (p.f + value);

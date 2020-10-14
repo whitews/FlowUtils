@@ -24,7 +24,7 @@ static PyObject *wrap_logicle_scale(PyObject *self, PyObject *args) {
     int n = (int)PyArray_DIM(x_array, 0);
 
     // get pointers to the data as C-type
-    double *xc    = (double*)PyArray_DATA(x_array);
+    double *xc = (double*)PyArray_DATA(x_array);
 
     // now we can call our function!
     logicle_scale(t, w, m, a, xc, n);
@@ -54,7 +54,7 @@ static PyObject *wrap_logicle_inverse(PyObject *self, PyObject *args) {
     int n = (int)PyArray_DIM(x_array, 0);
 
     // get pointers to the data as C-type
-    double *xc    = (double*)PyArray_DATA(x_array);
+    double *xc = (double*)PyArray_DATA(x_array);
 
     // now we can call our function!
     logicle_inverse(t, w, m, a, xc, n);
@@ -84,7 +84,7 @@ static PyObject *wrap_hyperlog_scale(PyObject *self, PyObject *args) {
     int n = (int)PyArray_DIM(x_array, 0);
 
     // get pointers to the data as C-type
-    double *xc    = (double*)PyArray_DATA(x_array);
+    double *xc = (double*)PyArray_DATA(x_array);
 
     // now we can call our function!
     hyperlog_scale(t, w, m, a, xc, n);
