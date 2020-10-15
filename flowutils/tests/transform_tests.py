@@ -28,7 +28,7 @@ class TransformsTestCase(unittest.TestCase):
         )
 
         # noinspection PyProtectedMember
-        data_out = transforms._logicle(data_in, t=1000, m=4.0, r=None, w=1.0, a=0)
+        data_out = transforms._logicle(data_in, t=1000, m=4.0, w=1.0, a=0)
 
         np.testing.assert_array_almost_equal(data_out, correct_output, decimal=6)
 
