@@ -53,6 +53,49 @@ class TransformsTestCase(unittest.TestCase):
         np.testing.assert_array_almost_equal(self.test_data_range, x[:, 0], decimal=10)
 
     @staticmethod
+    def test_asinh_range():
+        """Test a range of input values"""
+        data_in = np.array([-10.0, -5.0, -1.0, 0.0, 0.3, 1.0, 3.0, 10.0, 100.0, 1000.0], dtype=np.float)
+        data_in = data_in.reshape((-1, 1))
+        correct_output = np.array(
+            [[
+                -0.200009,
+                -0.139829,
+                -0.000856,
+                0.2,
+                0.303776,
+                0.400856,
+                0.495521,
+                0.600009,
+                0.8,
+                1.0
+            ]]
+        ).reshape((-1, 1))
+
+        # noinspection PyProtectedMember
+        data_out = transforms.asinh(data_in, channel_indices=0, t=1000, m=4.0, a=1.0)
+
+        np.testing.assert_array_almost_equal(data_out, correct_output, decimal=6)
+
+    def test_inverse_asinh_transform(self):
+        xform_data = transforms.asinh(
+            self.test_data_range.reshape(-1, 1),
+            [0],
+            t=10000,
+            m=4.5,
+            a=0
+        )
+        x = transforms.asinh_inverse(
+            xform_data,
+            [0],
+            t=10000,
+            m=4.5,
+            a=0
+        )
+
+        np.testing.assert_array_almost_equal(self.test_data_range, x[:, 0], decimal=10)
+
+    @staticmethod
     def test_hyperlog_range():
         """Test a range of input values"""
         data_in = np.array([-10, -5, -1, 0, 0.3, 1, 3, 10, 100, 1000])

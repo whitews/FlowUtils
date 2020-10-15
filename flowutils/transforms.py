@@ -120,13 +120,48 @@ def hyperlog_inverse(
     return data_copy
 
 
-def asinh(data, columns, pre_scale):
+def asinh(data, channel_indices, t, m, a):
     """
-    return asinh transformed points (after pre-scaling) for indices listed
+    An implementation of the parametrized inverse hyperbolic sine function
+    as defined in the GatingML 2.0 specification.
+
+    :param data: NumPy array of FCS event data
+    :param channel_indices: channel indices to transform (other channels will returned untransformed in place)
+    :param t: parameter specifying the top of the scale, (e.g. 262144)
+    :param m: parameter for the number of decades
+    :param a: parameter for the number of additional negative decades
     """
+    pre_scale = np.sinh(m * np.log(10)) / t
+    transpose = a * np.log(10)
+    divisor = (m + a) * np.log(10)
+
     data_copy = data.copy()
-    for c in columns:
-        data_copy.T[c] = np.arcsinh(data_copy[:, c] * pre_scale)
+
+    tmp_data = (np.arcsinh(data_copy[:, channel_indices] * pre_scale) + transpose) / divisor
+
+    data_copy[:, channel_indices] = tmp_data
+
+    return data_copy
+
+
+def asinh_inverse(data, channel_indices, t, m, a):
+    """
+    Inverse of the parametrized inverse hyperbolic sine function
+    as defined in the GatingML 2.0 specification.
+
+    :param data: NumPy array of FCS event data
+    :param channel_indices: channel indices to transform (other channels will returned untransformed in place)
+    :param t: parameter specifying the top of the scale, (e.g. 262144)
+    :param m: parameter for the number of decades
+    :param a: parameter for the number of additional negative decades
+    """
+    pre_scale = np.sinh(m * np.log(10)) / t
+    transpose = a * np.log(10)
+    divisor = (m + a) * np.log(10)
+
+    data_copy = data.copy()
+    data_copy[:, channel_indices] = (np.sinh((data_copy[:, channel_indices] * divisor) - transpose)) / pre_scale
+
     return data_copy
 
 
