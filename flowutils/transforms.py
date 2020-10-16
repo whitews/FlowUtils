@@ -126,10 +126,12 @@ def asinh(data, channel_indices, t, m, a):
     as defined in the GatingML 2.0 specification.
 
     :param data: NumPy array of FCS event data
-    :param channel_indices: channel indices to transform (other channels will returned untransformed in place)
+    :param channel_indices: channel indices to transform (other channels returned in place, untransformed)
     :param t: parameter specifying the top of the scale, (e.g. 262144)
     :param m: parameter for the number of decades
     :param a: parameter for the number of additional negative decades
+
+    :return: NumPy array of transformed events
     """
     pre_scale = np.sinh(m * np.log(10)) / t
     transpose = a * np.log(10)
@@ -150,10 +152,12 @@ def asinh_inverse(data, channel_indices, t, m, a):
     as defined in the GatingML 2.0 specification.
 
     :param data: NumPy array of FCS event data
-    :param channel_indices: channel indices to transform (other channels will returned untransformed in place)
+    :param channel_indices: channel indices to transform (other channels returned in place, untransformed)
     :param t: parameter specifying the top of the scale, (e.g. 262144)
     :param m: parameter for the number of decades
     :param a: parameter for the number of additional negative decades
+
+    :return: NumPy array of transformed events
     """
     pre_scale = np.sinh(m * np.log(10)) / t
     transpose = a * np.log(10)
@@ -165,12 +169,38 @@ def asinh_inverse(data, channel_indices, t, m, a):
     return data_copy
 
 
-def log_transform(data, channels):
-    n_points = data.copy()
-    for i in channels:
-        n_points[:, i] = _log_transform(n_points[:, i])
-    return n_points
+def log(data, channel_indices, t, m):
+    """
+    Parametrized logarithmic transformation, implemented as defined in the
+    GatingML 2.0 specification:
+
+    flog(x, T, M) = (1 / M) * log_10(x / T) + 1
+
+    :param data: NumPy array of FCS event data
+    :param channel_indices: channel indices to transform (other channels returned in place, untransformed)
+    :param t: parameter for the top of the linear scale (e.g. 262144)
+    :param m: parameter for desired number of decades
+
+    :return: NumPy array of transformed events
+    """
+    data_copy = data.copy()
+    data_copy[:, channel_indices] = (1. / m) * np.log10(data_copy[:, channel_indices] / t) + 1.
+
+    return data_copy
 
 
-def _log_transform(npnts):
-    return np.where(npnts <= 1, 0, np.log10(npnts))
+def log_inverse(data, channel_indices, t, m):
+    """
+    Inverse of logarithmic transformation
+
+    :param data: NumPy array of FCS event data
+    :param channel_indices: channel indices to transform (other channels returned in place, untransformed)
+    :param t: parameter for the top of the linear scale (e.g. 262144)
+    :param m: parameter for desired number of decades
+
+    :return: NumPy array of transformed events
+    """
+    data_copy = data.copy()
+    data_copy[:, channel_indices] = t * (10 ** ((data_copy[:, channel_indices] - 1) * m))
+
+    return data_copy

@@ -72,7 +72,6 @@ class TransformsTestCase(unittest.TestCase):
             ]]
         ).reshape((-1, 1))
 
-        # noinspection PyProtectedMember
         data_out = transforms.asinh(data_in, channel_indices=0, t=1000, m=4.0, a=1.0)
 
         np.testing.assert_array_almost_equal(data_out, correct_output, decimal=6)
@@ -139,3 +138,48 @@ class TransformsTestCase(unittest.TestCase):
 
         np.testing.assert_array_almost_equal(self.test_data_range, x[:, 0], decimal=10)
 
+    @staticmethod
+    def test_log_range():
+        """Test a range of input values"""
+        data_in = np.array(
+            [-1., 0., 0.5, 1., 10., 100., 1000., 1023., 10000., 100000, 262144],
+            dtype=np.float
+        )
+        data_in = data_in.reshape((-1, 1))
+        correct_output = np.array(
+            [[
+                np.nan,
+                -np.inf,
+                0.139794,
+                0.2,
+                0.4,
+                0.6,
+                0.8,
+                0.801975,
+                1.0,
+                1.2,
+                1.283708
+            ]]
+        ).reshape((-1, 1))
+
+        with np.errstate(divide='ignore', invalid='ignore'):
+            data_out = transforms.log(data_in, channel_indices=0, t=10000, m=5.0)
+
+        np.testing.assert_array_almost_equal(data_out, correct_output, decimal=6)
+
+    def test_inverse_log_transform(self):
+        with np.errstate(divide='ignore'):
+            xform_data = transforms.log(
+                self.test_data_range.reshape(-1, 1),
+                [0],
+                t=10000,
+                m=4.5
+            )
+        x = transforms.log_inverse(
+            xform_data,
+            [0],
+            t=10000,
+            m=4.5
+        )
+
+        np.testing.assert_array_almost_equal(self.test_data_range, x[:, 0], decimal=10)
