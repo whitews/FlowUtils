@@ -26,19 +26,41 @@ def _logicle_inverse(y, t=262144, m=4.5, w=0.5, a=0):
 
 def logicle(
         data,
-        channels,
+        channel_indices,
         t=262144,
         m=4.5,
         w=0.5,
         a=0
 ):
     """
-    return logicle transformed points for channels listed
+    Logicle transformation, implemented as defined in the
+    GatingML 2.0 specification:
+
+    logicle(x, T, W, M, A) = root(B(y, T, W, M, A) − x)
+
+    where B is a modified bi-exponential function defined as:
+
+    B(y, T, W, M, A) = ae^(by) − ce^(−dy) − f
+
+    The Logicle transformation was originally defined in the publication:
+
+    Moore WA and Parks DR. Update for the logicle data scale including operational
+    code implementations. Cytometry A., 2012:81A(4):273–277.
+
+    :param data: NumPy array of FCS event data
+    :param channel_indices: channel indices to transform (other channels returned in place, untransformed)
+    :param t: parameter for the top of the linear scale (e.g. 262144)
+    :param m: parameter for the number of decades the true logarithmic scale
+        approaches at the high end of the scale
+    :param w: parameter for the approximate number of decades in the linear region
+    :param a: parameter for the additional number of negative decades
+
+    :return: NumPy array of transformed events
     """
     data_copy = data.copy()
 
     # run logicle scale for each channel separately
-    for i in channels:
+    for i in channel_indices:
         tmp = _logicle(data_copy[:, i].T, t, m, w, a)
         data_copy.T[i] = tmp
     return data_copy
@@ -46,19 +68,29 @@ def logicle(
 
 def logicle_inverse(
         data,
-        channels,
+        channel_indices,
         t=262144,
         m=4.5,
         w=0.5,
         a=0
 ):
     """
-    return inverse logicle transformed points for channels listed
+    Inverse of the Logicle transformation (see `logicle()` documentation for more details)
+
+    :param data: NumPy array of FCS event data
+    :param channel_indices: channel indices to transform (other channels returned in place, untransformed)
+    :param t: parameter for the top of the linear scale (e.g. 262144)
+    :param m: parameter for the number of decades the true logarithmic scale
+        approaches at the high end of the scale
+    :param w: parameter for the approximate number of decades in the linear region
+    :param a: parameter for the additional number of negative decades
+
+    :return: NumPy array of transformed events
     """
     data_copy = data.copy()
 
     # run logicle scale for each channel separately
-    for i in channels:
+    for i in channel_indices:
         tmp = _logicle_inverse(data_copy[:, i].T, t, m, w, a)
         data_copy.T[i] = tmp
     return data_copy
@@ -74,19 +106,40 @@ def _hyperlog(y, t=262144, m=4.5, w=0.5, a=0):
 
 def hyperlog(
         data,
-        channels,
+        channel_indices,
         t=262144,
         m=4.5,
         w=0.5,
         a=0,
 ):
     """
-    return hyperlog transformed points for channels listed
+    Hyperlog transformation, implemented as defined in the
+    GatingML 2.0 specification:
+
+    hyperlog(x, T, W, M, A) = root(EH(y, T, W, M, A) − x)
+
+    where EH is defined as:
+
+    EH(y, T, W, M, A) = ae^(by) + cy − f
+
+    The Hyperlog transformation was originally defined in the publication:
+
+    Bagwell CB. Hyperlog-a flexible log-like transform for negative, zero, and
+    positive valued data. Cytometry A., 2005:64(1):34–42.
+
+    :param data: NumPy array of FCS event data
+    :param channel_indices: channel indices to transform (other channels returned in place, untransformed)
+    :param t: parameter for the top of the linear scale (e.g. 262144)
+    :param m: parameter for desired number of decades
+    :param w: parameter for the approximate number of decades in the linear region
+    :param a: parameter for the additional number of negative decades
+
+    :return: NumPy array of transformed events
     """
     data_copy = data.copy()
 
     # run hyperlog scale for each channel separately
-    for i in channels:
+    for i in channel_indices:
         tmp = _hyperlog(data_copy[:, i].T, t, m, w, a)
         data_copy.T[i] = tmp
     return data_copy
