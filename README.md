@@ -6,7 +6,7 @@
 
 [![Build Status](https://travis-ci.com/whitews/FlowUtils.svg?branch=master)](https://travis-ci.com/whitews/FlowUtils)
 [![Coverage](https://codecov.io/gh/whitews/FlowUtils/branch/master/graph/badge.svg)](https://codecov.io/gh/whitews/flowutils)
-
+[![Documentation Status](https://readthedocs.org/projects/flowutils/badge/?version=latest)](https://flowutils.readthedocs.io/en/latest/?badge=latest)
 
 FlowUtils is a Python package containing various utility functions related
 to flow cytometry analysis, primarily focused on compensation and
