@@ -5,9 +5,11 @@ from pathlib import Path
 
 
 def get_spill(text):
-    """Extracts spillover matrix from FCS text entry.
+    """
+    Extracts spillover matrix from FCS text entry.
 
-    Returns (spillover matrix new_spill, column headers)
+    :param text: Text value from the $SPILL or $SPILLOVER metadata keyword in an FCS file
+    :return: A tuple containing: (spillover matrix new_spill, column headers)
     """
     spill = text.split(',')
     n = int(spill[0])
@@ -71,11 +73,13 @@ def _parse_multiline_matrix(matrix_text, fluoro_labels):
 
 def _convert_matrix_text_to_array(matrix_text, fluoro_labels, fluoro_indices):
     """
-    Converts a CSV text string to a NumPy array
+    Converts a compensation matrix from a CSV text string to a NumPy array
+
     :param matrix_text: CSV text string where header contains the fluoro labels
     :param fluoro_labels: text labels of the FCS fluorescent channels
     :param fluoro_indices: channel indices of the fluorescent channels
-    :return:
+
+    :return: NumPy array of the compensation matrix values
     """
     # parse the matrix text and validate the number of params match
     # the number of fluoro params and that the matrix
@@ -153,8 +157,9 @@ def _convert_matrix_text_to_array(matrix_text, fluoro_labels, fluoro_indices):
 
 def parse_compensation_matrix(compensation, channel_labels, null_channels=None):
     """
-    Returns a NumPy array with the compensation matrix where the first row are
+    Returns a NumPy array with the compensation matrix, where the first row contains
     the indices of the fluorescent channels
+
     :param compensation: Compensation matrix: may be a NumPy array, a CSV file
         path, a pathlib Path object to a CSV or TSV file or a string of CSV
         text. If a string, both multi-line, traditional CSV, and the single
@@ -165,6 +170,7 @@ def parse_compensation_matrix(compensation, channel_labels, null_channels=None):
     :param null_channels: Specify any empty channels that were collected and
         present in the channel_labels argument. These will be ignored when
         validating and creating the compensation matrix
+
     :return: Compensation matrix as NumPy array where header contains the
         channel numbers (not indices!)
     """
@@ -224,23 +230,33 @@ def parse_compensation_matrix(compensation, channel_labels, null_channels=None):
     return matrix
 
 
-def compensate(npy, spill, indices=None):
+def compensate(event_data, spill_matrix, fluoro_indices=None):
     """
-    Compensate numpy data 'npy' given spillover matrix 'spill'
+    Compensate NumPy event data 'npy' given spillover matrix 'spill'
     and marker indices to compensate
+
+    :param event_data: NumPy array of the event data
+    :param spill_matrix: Compensation matrix as a NumPy array (without headers)
+    :param fluoro_indices: Optional list of indices of the fluorescent channels (only
+        these will be extracted & compensated). If None (default), all columns
+        will be compensated.
+
+    :return: NumPy array of compensated event data. If fluoro_indices were given,
+        the data is returned in the column order given, with the non-fluorescent
+        columns unmodified.
     """
-    data = npy.copy()
-    if len(indices) > 0:
-        comp_data = data[:, indices]
+    data = event_data.copy()
+    if len(fluoro_indices) > 0:
+        comp_data = data[:, fluoro_indices]
     else:
         comp_data = data
 
     # this does the actual compensation
-    comp_data = np.linalg.solve(spill.T, comp_data.T).T
+    comp_data = np.linalg.solve(spill_matrix.T, comp_data.T).T
 
-    # Re-insert comp'd data columns
-    if len(indices) > 0:
-        data[:, indices] = comp_data
+    # Re-insert compensated data columns
+    if len(fluoro_indices) > 0:
+        data[:, fluoro_indices] = comp_data
     else:
         data = comp_data
 
@@ -250,8 +266,11 @@ def compensate(npy, spill, indices=None):
 def gen_spill_matrix(npy, stain_index):
     """
     Generates spillover matrix for one FCS file (presumably from beads)
-    npy: the numpy array of the bead data
-    stain_index: index of the stained channel
+
+    :param npy: the numpy array of the bead data
+    :param stain_index: index of the stained channel
+
+    :return: Compensation matrix as a NumPy array (without headers)
     """
 
     # get the median for all unstained columns, zero for stained index

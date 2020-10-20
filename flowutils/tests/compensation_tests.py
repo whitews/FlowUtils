@@ -73,6 +73,6 @@ class CompensationTestCase(unittest.TestCase):
         npy_data = npy_data.reshape(-1, len(channels))
         spill = np.genfromtxt(spill_csv_path, delimiter=',', skip_header=True)
 
-        comp_data = compensate.compensate(npy_data, spill, indices=fluoro_indices)
+        comp_data = compensate.compensate(npy_data, spill, fluoro_indices=fluoro_indices)
 
         self.assertIsInstance(comp_data, np.ndarray)
