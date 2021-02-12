@@ -26,6 +26,7 @@ setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     author='Scott White',
+    author_email='whitews@gmail.com',
     license='BSD',
     url="https://github.com/whitews/flowutils",
     ext_modules=[logicle_extension],
