@@ -170,7 +170,6 @@ def parse_compensation_matrix(compensation, channel_labels, null_channels=None):
     :param null_channels: Specify any empty channels that were collected and
         present in the channel_labels argument. These will be ignored when
         validating and creating the compensation matrix
-
     :return: Compensation matrix as NumPy array where header contains the
         channel numbers (not indices!)
     """
@@ -233,7 +232,7 @@ def parse_compensation_matrix(compensation, channel_labels, null_channels=None):
 def compensate(event_data, spill_matrix, fluoro_indices=None):
     """
     Compensate NumPy event data 'npy' given spillover matrix 'spill'
-    and marker indices to compensate
+    and marker indices to compensate.
 
     :param event_data: NumPy array of the event data
     :param spill_matrix: Compensation matrix as a NumPy array (without headers)
