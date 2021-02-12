@@ -19,7 +19,7 @@ logicle_extension = Extension(
 
 setup(
     name='FlowUtils',
-    version='0.9.0',
+    version='0.9.1',
     packages=['flowutils'],
     package_data={'': []},
     description='Flow Cytometry Standard Utilities',
@@ -30,7 +30,6 @@ setup(
     url="https://github.com/whitews/flowutils",
     ext_modules=[logicle_extension],
     install_requires=['numpy>=1.7'],
-    data_files=[("", ["LICENSE"])],
     classifiers=[
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.7',
