@@ -51,6 +51,28 @@ class CompensationTestCase(unittest.TestCase):
 
         self.assertIsInstance(matrix_array, np.ndarray)
 
+    def test_parse_compensation_matrix_from_path(self):
+        channel_labels = [
+            "Ax488-A",
+            "PE-A",
+            "PE-TR-A",
+            "PerCP-Cy55-A",
+            "PE-Cy7-A",
+            "Ax647-A",
+            "Ax700-A",
+            "Ax750-A",
+            "PacBlu-A",
+            "Qdot525-A",
+            "PacOrange-A",
+            "Qdot605-A",
+            "Qdot655-A",
+            "Qdot705-A"
+        ]
+
+        matrix_array = compensate.parse_compensation_matrix("flowutils/tests/test_data/test_comp_matrix.csv", channel_labels)
+
+        self.assertIsInstance(matrix_array, np.ndarray)
+
     def test_compensate(self):
         npy_file_path = "flowutils/tests/test_data/test_comp_event_data.npy"
         spill_csv_path = "flowutils/tests/test_data/test_comp_matrix.csv"
