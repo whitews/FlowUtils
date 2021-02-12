@@ -44,8 +44,8 @@ def logicle(
 
     The Logicle transformation was originally defined in the publication:
 
-    Moore WA and Parks DR. Update for the logicle data scale including operational
-    code implementations. Cytometry A., 2012:81A(4):273–277.
+        Moore WA and Parks DR. Update for the logicle data scale including operational
+        code implementations. Cytometry A., 2012:81A(4):273–277.
 
     :param data: NumPy array of FCS event data
     :param channel_indices: channel indices to transform (other channels returned in place, untransformed)
@@ -124,8 +124,8 @@ def hyperlog(
 
     The Hyperlog transformation was originally defined in the publication:
 
-    Bagwell CB. Hyperlog-a flexible log-like transform for negative, zero, and
-    positive valued data. Cytometry A., 2005:64(1):34–42.
+        Bagwell CB. Hyperlog-a flexible log-like transform for negative, zero, and
+        positive valued data. Cytometry A., 2005:64(1):34–42.
 
     :param data: NumPy array of FCS event data
     :param channel_indices: channel indices to transform (other channels returned in place, untransformed)
