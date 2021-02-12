@@ -155,19 +155,29 @@ def _hyperlog_inverse(y, t=262144, m=4.5, w=0.5, a=0):
 
 def hyperlog_inverse(
         data,
-        channels,
+        channel_indices,
         t=262144,
         m=4.5,
         w=0.5,
         a=0,
 ):
     """
-    return hyperlog transformed points for channels listed
+    Inverse of the Hyperlog transformation, implemented as defined in the
+    GatingML 2.0 specification (see hyperlog() documentation for more details).
+
+    :param data: NumPy array of FCS event data
+    :param channel_indices: channel indices to transform (other channels returned in place, untransformed)
+    :param t: parameter for the top of the linear scale (e.g. 262144)
+    :param m: parameter for desired number of decades
+    :param w: parameter for the approximate number of decades in the linear region
+    :param a: parameter for the additional number of negative decades
+
+    :return: NumPy array of transformed events
     """
     data_copy = data.copy()
 
     # run hyperlog scale for each channel separately
-    for i in channels:
+    for i in channel_indices:
         tmp = _hyperlog_inverse(data_copy[:, i].T, t, m, w, a)
         data_copy.T[i] = tmp
     return data_copy
