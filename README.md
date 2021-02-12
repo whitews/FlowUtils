@@ -17,7 +17,7 @@ cytometry data.  It was developed as an extension to the light-weight
 [FlowIO library](https://github.com/whitews/FlowIO). FlowIO reads and 
 writes Flow Cytometry Standard (FCS) files, and has zero dependencies. 
 For higher level interaction with flow cytometry data, including 
-GatingML support, see the related 
+GatingML & FlowJo 10 support, see the related 
 [FlowKit project](https://github.com/whitews/FlowKit).
 
 ## Installation
