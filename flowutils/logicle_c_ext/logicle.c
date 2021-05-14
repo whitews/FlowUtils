@@ -92,6 +92,8 @@ double solve (double b, double w) {
 		else
 			d_hi = d;
 	}
+
+	return -1;
 }
 
 double seriesBiexponential (struct logicle_params p, double scale) {
@@ -160,8 +162,9 @@ double scale (struct logicle_params p, double value) {
 		}
 	}
 
-	// TODO: do something if we get here, scale did not converge
-};
+	// if we get here, scale did not converge
+	return -1;
+}
 
 
 void logicle_scale(double T, double W, double M, double A, double* x, int n) {
@@ -248,7 +251,7 @@ double logicle_inverse_scale (struct logicle_params p, double value) {
 		return -inverse;
 	else
 		return inverse;
-};
+}
 
 void logicle_inverse(double T, double W, double M, double A, double* x, int n) {
 	// allocate the parameter structure
@@ -314,15 +317,14 @@ void logicle_inverse(double T, double W, double M, double A, double* x, int n) {
 	}
 }
 
-double taylorSeries (struct logicle_params p, double scale)
-	{
-		// Taylor series is around x1
-		double x = scale - p.x1;
-		double sum = p.taylor[TAYLOR_LENGTH - 1] * x;
-		for (int i = TAYLOR_LENGTH - 2; i >= 0; --i)
-			sum = (sum + p.taylor[i]) * x;
-		return sum;
-	}
+double taylorSeries (struct logicle_params p, double scale) {
+    // Taylor series is around x1
+    double x = scale - p.x1;
+    double sum = p.taylor[TAYLOR_LENGTH - 1] * x;
+    for (int i = TAYLOR_LENGTH - 2; i >= 0; --i)
+        sum = (sum + p.taylor[i]) * x;
+    return sum;
+}
 
 double hyperscale (struct logicle_params p, double value) {
 	// handle true zero separately
@@ -374,9 +376,9 @@ double hyperscale (struct logicle_params p, double value) {
 		}
 	}
 
-	// TODO: do something if we get here, scale did not converge
-};
-
+	// if we get here, scale did not converge
+	return -1;
+}
 
 void hyperlog_scale(double T, double W, double M, double A, double* x, int n) {
 	// allocate the parameter structure
@@ -447,27 +449,26 @@ void hyperlog_scale(double T, double W, double M, double A, double* x, int n) {
 	}
 }
 
-double hyperscale_inverse (struct logicle_params p, double value)
-	{
-		// reflect negative scale regions
-		bool negative = value < p.x1;
-		if (negative)
-			value = 2 * p.x1 - value;
+double hyperscale_inverse (struct logicle_params p, double value) {
+    // reflect negative scale regions
+    bool negative = value < p.x1;
+    if (negative)
+        value = 2 * p.x1 - value;
 
-		double inverse;
-		if (value < p.xTaylor)
-			// near x1, i.e., data zero use the series expansion
-			inverse = taylorSeries(p, value);
-		else
-			// this formulation has better roundoff behavior
-			inverse = (p.a * exp(p.b * value) + p.c * value) - p.f;
+    double inverse;
+    if (value < p.xTaylor)
+        // near x1, i.e., data zero use the series expansion
+        inverse = taylorSeries(p, value);
+    else
+        // this formulation has better roundoff behavior
+        inverse = (p.a * exp(p.b * value) + p.c * value) - p.f;
 
-		// handle scale for negative values
-		if (negative)
-			return -inverse;
-		else
-			return inverse;
-	}
+    // handle scale for negative values
+    if (negative)
+        return -inverse;
+    else
+        return inverse;
+}
 
 void hyperlog_inverse(double T, double W, double M, double A, double* x, int n) {
 	// allocate the parameter structure
