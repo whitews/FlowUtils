@@ -22,25 +22,15 @@ GatingML & FlowJo 10 support, see the related
 
 ## Installation
 
-FlowUtils implements several transformation functions as C extensions
-for increased performance on large arrays of FCS event data. **NumPy is
-required to compile these C extensions prior to installing FlowUtils.**
-
 ### From PyPI
 
-FlowUtils is available via the `pip` command. However, NumPy must be installed prior in order to
-compile the C extensions.
-
 ```
-pip install numpy
 pip install flowutils
 ```
 
 ### From GitHub source code
 
 ```
-pip install numpy
-
 git clone https://github.com/whitews/flowutils
 cd flowutils
 
