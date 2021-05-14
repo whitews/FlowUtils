@@ -1,10 +1,8 @@
-from setuptools import setup, Extension
+from setuptools import setup, Extension, dist
 
+dist.Distribution().fetch_build_eggs(['numpy>=1.7'])
 
-class NumpyInclude(object):
-    def __str__(self):
-        import numpy
-        return numpy.get_include()
+import numpy as np
 
 
 with open("README.md", "r") as fh:
@@ -16,13 +14,13 @@ logicle_extension = Extension(
         'flowutils/logicle_c_ext/_logicle.c',
         'flowutils/logicle_c_ext/logicle.c'
     ],
-    include_dirs=[NumpyInclude(), 'flowutils/logicle_c_ext'],
+    include_dirs=[np.get_include(), 'flowutils/logicle_c_ext'],
     extra_compile_args=['-std=c99']
 )
 
 setup(
     name='FlowUtils',
-    version='0.9.3b',
+    version='0.9.3',
     packages=['flowutils'],
     package_data={'': []},
     description='Flow Cytometry Standard Utilities',
@@ -34,7 +32,6 @@ setup(
     url="https://github.com/whitews/flowutils",
     ext_modules=[logicle_extension],
     install_requires=['numpy>=1.7'],
-    setup_requires=['numpy>=1.7'],
     classifiers=[
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.7',
