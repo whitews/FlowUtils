@@ -12,5 +12,6 @@ _build/
 develop-eggs/
 dist/
 wheels/
+.eggs/
 *.egg-info/
 *.egg
