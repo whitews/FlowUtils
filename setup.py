@@ -1,6 +1,6 @@
 from setuptools import setup, Extension, dist
 
-dist.Distribution().fetch_build_eggs(['numpy>=1.7'])
+dist.Distribution().fetch_build_eggs(['numpy>=1.17'])
 
 import numpy as np
 
@@ -31,7 +31,7 @@ setup(
     license='BSD',
     url="https://github.com/whitews/flowutils",
     ext_modules=[logicle_extension],
-    install_requires=['numpy>=1.7'],
+    install_requires=['numpy>=1.17'],
     classifiers=[
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.7',
