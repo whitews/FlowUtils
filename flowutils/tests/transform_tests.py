@@ -55,7 +55,7 @@ class TransformsTestCase(unittest.TestCase):
     @staticmethod
     def test_asinh_range():
         """Test a range of input values"""
-        data_in = np.array([-10.0, -5.0, -1.0, 0.0, 0.3, 1.0, 3.0, 10.0, 100.0, 1000.0], dtype=np.float)
+        data_in = np.array([-10.0, -5.0, -1.0, 0.0, 0.3, 1.0, 3.0, 10.0, 100.0, 1000.0], dtype=float)
         data_in = data_in.reshape((-1, 1))
         correct_output = np.array(
             [[
@@ -143,7 +143,7 @@ class TransformsTestCase(unittest.TestCase):
         """Test a range of input values"""
         data_in = np.array(
             [-1., 0., 0.5, 1., 10., 100., 1000., 1023., 10000., 100000, 262144],
-            dtype=np.float
+            dtype=float
         )
         data_in = data_in.reshape((-1, 1))
         correct_output = np.array(
