@@ -263,6 +263,20 @@ def compensate(event_data, spill_matrix, fluoro_indices=None):
 
 
 def inverse_compensate(event_data, spill_matrix, fluoro_indices=None):
+    """
+    Inverse the compensation on NumPy event data 'npy' given spillover matrix 'spill'
+    and marker indices to "un-compensate".
+
+    :param event_data: NumPy array of the event data
+    :param spill_matrix: Compensation matrix as a NumPy array (without headers)
+    :param fluoro_indices: Optional list of indices of the fluorescent channels (only
+        these will be extracted & un-compensated). If None (default), all columns
+        will be un-compensated.
+
+    :return: NumPy array of un-compensated event data. If fluoro_indices were given,
+        the data is returned in the column order given, with the non-fluorescent
+        columns unmodified.
+    """
     data = event_data.copy()
     if len(fluoro_indices) > 0:
         inv_comp_data = data[:, fluoro_indices]
