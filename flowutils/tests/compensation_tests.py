@@ -98,3 +98,30 @@ class CompensationTestCase(unittest.TestCase):
         comp_data = compensate.compensate(npy_data, spill, fluoro_indices=fluoro_indices)
 
         self.assertIsInstance(comp_data, np.ndarray)
+
+    def test_inverse_compensate(self):
+        npy_file_path = "flowutils/tests/test_data/test_comp_event_data.npy"
+        spill_csv_path = "flowutils/tests/test_data/test_comp_matrix.csv"
+        channels = [
+            'FSC-A', 'FSC-W', 'SSC-A',
+            'Ax488-A', 'PE-A', 'PE-TR-A',
+            'PerCP-Cy55-A', 'PE-Cy7-A', 'Ax647-A',
+            'Ax700-A', 'Ax750-A', 'PacBlu-A',
+            'Qdot525-A', 'PacOrange-A', 'Qdot605-A',
+            'Qdot655-A', 'Qdot705-A', 'Time'
+        ]
+
+        fluoro_indices = []
+        for i, chan in enumerate(channels):
+            if chan in ['FSC-A', 'FSC-W', 'SSC-A', 'Time']:
+                continue
+            fluoro_indices.append(i)
+
+        npy_data = np.fromfile(npy_file_path)
+        npy_data = npy_data.reshape(-1, len(channels))
+        spill = np.genfromtxt(spill_csv_path, delimiter=',', skip_header=True)
+
+        comp_data = compensate.compensate(npy_data, spill, fluoro_indices=fluoro_indices)
+        inv_comp_data = compensate.inverse_compensate(comp_data, spill, fluoro_indices=fluoro_indices)
+
+        np.testing.assert_almost_equal(inv_comp_data, npy_data, 10)

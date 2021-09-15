@@ -262,6 +262,24 @@ def compensate(event_data, spill_matrix, fluoro_indices=None):
     return data
 
 
+def inverse_compensate(event_data, spill_matrix, fluoro_indices=None):
+    data = event_data.copy()
+    if len(fluoro_indices) > 0:
+        inv_comp_data = data[:, fluoro_indices]
+    else:
+        inv_comp_data = data
+
+    inv_comp_data = np.dot(inv_comp_data, spill_matrix)
+
+    # Re-insert compensated data columns
+    if len(fluoro_indices) > 0:
+        data[:, fluoro_indices] = inv_comp_data
+    else:
+        data = inv_comp_data
+
+    return data
+
+
 def gen_spill_matrix(npy, stain_index):
     """
     Generates spillover matrix for one FCS file (presumably from beads)
