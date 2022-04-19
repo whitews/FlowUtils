@@ -1,5 +1,6 @@
 import unittest
 import numpy as np
+import pathlib
 from flowutils import compensate
 
 fcs_spill = '13,B515-A,R780-A,R710-A,R660-A,V800-A,V655-A,V585-A,V450-A,G780-A,G710-A,G660-A,G610-A,G560-A,'\
@@ -51,6 +52,31 @@ class CompensationTestCase(unittest.TestCase):
 
         self.assertIsInstance(matrix_array, np.ndarray)
 
+    def test_parse_compensation_matrix_from_str(self):
+        channel_labels = [
+            "Ax488-A",
+            "PE-A",
+            "PE-TR-A",
+            "PerCP-Cy55-A",
+            "PE-Cy7-A",
+            "Ax647-A",
+            "Ax700-A",
+            "Ax750-A",
+            "PacBlu-A",
+            "Qdot525-A",
+            "PacOrange-A",
+            "Qdot605-A",
+            "Qdot655-A",
+            "Qdot705-A"
+        ]
+
+        matrix_array = compensate.parse_compensation_matrix(
+            "flowutils/tests/test_data/test_comp_matrix.csv",
+            channel_labels
+        )
+
+        self.assertIsInstance(matrix_array, np.ndarray)
+
     def test_parse_compensation_matrix_from_path(self):
         channel_labels = [
             "Ax488-A",
@@ -69,7 +95,9 @@ class CompensationTestCase(unittest.TestCase):
             "Qdot705-A"
         ]
 
-        matrix_array = compensate.parse_compensation_matrix("flowutils/tests/test_data/test_comp_matrix.csv", channel_labels)
+        comp_path = pathlib.Path("flowutils/tests/test_data/test_comp_matrix.csv")
+
+        matrix_array = compensate.parse_compensation_matrix(comp_path, channel_labels)
 
         self.assertIsInstance(matrix_array, np.ndarray)
 
@@ -98,3 +126,31 @@ class CompensationTestCase(unittest.TestCase):
         comp_data = compensate.compensate(npy_data, spill, fluoro_indices=fluoro_indices)
 
         self.assertIsInstance(comp_data, np.ndarray)
+
+    @staticmethod
+    def test_inverse_compensate():
+        npy_file_path = "flowutils/tests/test_data/test_comp_event_data.npy"
+        spill_csv_path = "flowutils/tests/test_data/test_comp_matrix.csv"
+        channels = [
+            'FSC-A', 'FSC-W', 'SSC-A',
+            'Ax488-A', 'PE-A', 'PE-TR-A',
+            'PerCP-Cy55-A', 'PE-Cy7-A', 'Ax647-A',
+            'Ax700-A', 'Ax750-A', 'PacBlu-A',
+            'Qdot525-A', 'PacOrange-A', 'Qdot605-A',
+            'Qdot655-A', 'Qdot705-A', 'Time'
+        ]
+
+        fluoro_indices = []
+        for i, chan in enumerate(channels):
+            if chan in ['FSC-A', 'FSC-W', 'SSC-A', 'Time']:
+                continue
+            fluoro_indices.append(i)
+
+        npy_data = np.fromfile(npy_file_path)
+        npy_data = npy_data.reshape(-1, len(channels))
+        spill = np.genfromtxt(spill_csv_path, delimiter=',', skip_header=True)
+
+        comp_data = compensate.compensate(npy_data, spill, fluoro_indices=fluoro_indices)
+        inv_comp_data = compensate.inverse_compensate(comp_data, spill, fluoro_indices=fluoro_indices)
+
+        np.testing.assert_almost_equal(inv_comp_data, npy_data, 10)

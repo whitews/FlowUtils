@@ -20,7 +20,7 @@ logicle_extension = Extension(
 
 setup(
     name='FlowUtils',
-    version='0.9.4',
+    version='0.9.5',
     packages=['flowutils'],
     package_data={'': []},
     description='Flow Cytometry Standard Utilities',
@@ -33,6 +33,7 @@ setup(
     ext_modules=[logicle_extension],
     install_requires=['numpy>=1.17'],
     classifiers=[
+        'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.6'
