@@ -14,7 +14,10 @@ jobs:
         os: [ ubuntu-20.04, windows-2019, macOS-10.15 ]
 
     steps:
-      - uses: actions/checkout@develop
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          ref: 'develop'
 
       - uses: actions/setup-python@v3
 
