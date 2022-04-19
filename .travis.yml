@@ -6,7 +6,8 @@ python:
   - "3.8"
   - "3.9"
 install:
-  - pip install codecov numpy>=1.19
+  - pip install codecov
+  - pip install --upgrade numpy>=1.19
   - python setup.py build_ext --inplace
 script:
   - coverage run --source flowutils --omit="flowutils/tests/*" run_tests.py
