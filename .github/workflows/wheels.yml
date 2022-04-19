@@ -3,7 +3,7 @@ name: Wheel builder
 on:
   push:
     branches:
-      - master
+      - develop
 
 jobs:
   build_wheels:
@@ -14,7 +14,7 @@ jobs:
         os: [ ubuntu-20.04, windows-2019, macOS-10.15 ]
 
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@develop
 
       - uses: actions/setup-python@v3
 
