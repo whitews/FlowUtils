@@ -26,6 +26,8 @@ jobs:
 
       - name: Build wheels
         run: python -m cibuildwheel --output-dir wheelhouse
+        env:
+          CIBW_BEFORE_BUILD: pip install oldest-supported-numpy
 
       - name: Store artifacts
         uses: actions/upload-artifact@v2
