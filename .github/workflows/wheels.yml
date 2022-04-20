@@ -31,7 +31,7 @@ jobs:
           CIBW_BUILD: cp36-* cp37-* cp38-* cp39-*
 
       - name: List wheel contents
-        run: python -m zipfile --list wheelhouse/*.whl
+        run: python -m zipfile --list "wheelhouse/*.whl"
 
       - name: Store artifacts
         uses: actions/upload-artifact@v2
