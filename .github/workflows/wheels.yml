@@ -11,7 +11,28 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [windows-2019, macOS-10.15]
+        include:
+          #[windows-2019, macOS-10.15]
+          - {os: ubuntu-20.04, py: cp37, arch: x86_64}  # linux (ubuntu)
+          - {os: ubuntu-20.04, py: cp38, arch: x86_64}
+          - {os: ubuntu-20.04, py: cp39, arch: x86_64}
+          - {os: ubuntu-20.04, py: cp310, arch: x86_64}
+          - { os: windows-2019, py: cp37, arch: win32 }  # windows, 32-bit
+          - { os: windows-2019, py: cp38, arch: win32 }
+          - { os: windows-2019, py: cp39, arch: win32 }
+          - { os: windows-2019, py: cp310, arch: win32 }
+          - {os: windows-2019, py: cp37, arch: x86_64}  # windows, 64-bit
+          - {os: windows-2019, py: cp38, arch: x86_64}
+          - {os: windows-2019, py: cp39, arch: x86_64}
+          - {os: windows-2019, py: cp310, arch: x86_64}
+          - {os: macOS-10.15, py: cp37, arch: x86_64}   # MacOS Intel
+          - {os: macOS-10.15, py: cp38, arch: x86_64}
+          - {os: macOS-10.15, py: cp39, arch: x86_64}
+          - {os: macOS-10.15, py: cp310, arch: x86_64}
+          - {os: macOS-11, py: cp37, arch: arm64}       # MacOS Apple Silicon
+          - {os: macOS-11, py: cp38, arch: arm64}
+          - {os: macOS-11, py: cp39, arch: arm64}
+          - {os: macOS-11, py: cp310, arch: arm64}
 
     steps:
       - name: Checkout
@@ -28,38 +49,8 @@ jobs:
         run: python -m cibuildwheel --output-dir wheelhouse
         env:
           CIBW_BEFORE_BUILD: pip install numpy>=1.19
-          CIBW_BUILD: cp36-* cp37-* cp38-* cp39-*
 
       - name: Store artifacts
         uses: actions/upload-artifact@v2
         with:
           path: wheelhouse/*.whl
-
-  build_wheels_macos_arm64:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ "macOS-latest" ]
-        python: [3.8, 3.9]
-
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v2
-      with:
-        ref: 'develop'
-
-    - uses: actions/setup-python@v2
-
-    - name: Install cibuildwheel
-      run: python -m pip install cibuildwheel==2.4.0
-
-    - name: Build wheels for Apple Silicon
-      run: python -m cibuildwheel --output-dir wheelhouse
-      env:
-        CIBW_ARCHS_MACOS: arm64
-        CIBW_BEFORE_BUILD: pip install numpy>=1.19
-
-    - name: Store artifacts
-      uses: actions/upload-artifact@v2
-      with:
-        path: wheelhouse/*.whl
