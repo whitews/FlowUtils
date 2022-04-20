@@ -29,12 +29,14 @@ jobs:
       - run: python setup.py build_ext --inplace
 
       - name: Run tests with coverage
-        run: coverage run --source flowutils --omit="flowutils/tests/*" run_tests.py
+        run: |
+          coverage run --source flowutils --omit="flowutils/tests/*" run_tests.py
+          coverage xml
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v2
         with:
-          files: .coverage
+          files: coverage.xml
           fail_ci_if_error: true
           verbose: true
 
