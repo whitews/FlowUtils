@@ -28,6 +28,9 @@ jobs:
       - run: pip install numpy>=1.19
       - run: python setup.py build_ext --inplace
 
+      - name: Run tests with coverage
+        run: coverage run --source flowutils --omit="flowutils/tests/*" run_tests.py
+
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v2
         with:
