@@ -56,6 +56,7 @@ jobs:
     - name: Build wheels for Apple Silicon
       run: python -m cibuildwheel --output-dir wheelhouse
       env:
+        CIBW_ARCHS_MACOS: arm64
         CIBW_BEFORE_BUILD: pip install numpy>=1.19
 
     - name: Store artifacts
