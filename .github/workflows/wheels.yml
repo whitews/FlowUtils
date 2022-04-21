@@ -27,7 +27,7 @@ jobs:
         env:
           CIBW_BEFORE_BUILD: pip install numpy>=1.19
           CIBW_SKIP: pp* *-musllinux_* *-manylinux_i686 *-win32  # skip PyPy, musllinux, 32-bit Linux & win32 builds
-          CIBW_BUILD: cp37-* cp38-* cp39-*
+          CIBW_BUILD: cp37-* cp38-* cp39-* cp310-*
 
       - name: Store artifacts
         uses: actions/upload-artifact@v2
@@ -58,7 +58,7 @@ jobs:
         env:
           CIBW_BEFORE_BUILD: pip install numpy>=1.19
           CIBW_SKIP: pp*  # skip PyPy
-          CIBW_BUILD: cp38-* cp39-*  # Only Python 3.8 & 3.9
+          CIBW_BUILD: cp38-* cp39-* cp310-*  # Only Python 3.8, 3.9, & 3.10
           CIBW_ARCHS_MACOS: arm64  # Only arm64 for Apple Silicon builds
 
       - name: Store artifacts
