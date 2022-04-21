@@ -292,25 +292,3 @@ def inverse_compensate(event_data, spill_matrix, fluoro_indices=None):
         data = inv_comp_data
 
     return data
-
-
-def gen_spill_matrix(npy, stain_index):
-    """
-    Generates spillover matrix for one FCS file (presumably from beads)
-
-    :param npy: the numpy array of the bead data
-    :param stain_index: index of the stained channel
-
-    :return: Compensation matrix as a NumPy array (without headers)
-    """
-
-    # get the median for all unstained columns, zero for stained index
-    spill = list()
-    for column, i in enumerate(npy.T):
-        if i == stain_index:
-            spill.append(0.0)
-            continue
-        else:
-            spill.append(np.median(column))
-        
-    return spill
