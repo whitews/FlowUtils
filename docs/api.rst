@@ -33,3 +33,13 @@ flow cytometry community. These include:
    :maxdepth: 2
 
    transforms functions <transforms>
+
+gating Module
+-------------
+
+The :code:`gating` module includes helper functions related to evaluating event membership within gates.
+
+.. toctree::
+   :maxdepth: 2
+
+   gating functions <gating>
