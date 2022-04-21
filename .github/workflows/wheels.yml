@@ -11,7 +11,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [windows-2019, macos-10.15]
+        os: [ubuntu-20.04, windows-2019, macos-10.15]
 
     steps:
       - name: Checkout
@@ -28,7 +28,7 @@ jobs:
         run: python -m cibuildwheel --output-dir wheelhouse
         env:
           CIBW_BEFORE_BUILD: pip install numpy>=1.19
-          CIBW_SKIP: pp* *-win32  # skip PyPy * win32 builds
+          CIBW_SKIP: pp* *-musllinux_* *-manylinux_i686 *-win32  # skip PyPy, musllinux, 32-bit Linux & win32 builds
           CIBW_BUILD: cp37-* cp38-* cp39-*
 
       - name: Store artifacts
