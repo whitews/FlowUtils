@@ -21,7 +21,7 @@ class Mock(MagicMock):
         return MagicMock()
 
 
-MOCK_MODULES = ['flowutils.logicle_c']
+MOCK_MODULES = ['flowutils.logicle_c', 'flowutils.gating_c']
 sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
 
 # -- Path setup --------------------------------------------------------------
