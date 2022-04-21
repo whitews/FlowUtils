@@ -5,8 +5,7 @@
 [![PyPI version](https://img.shields.io/pypi/v/flowutils.svg?colorB=blue)](https://pypi.python.org/pypi/flowutils/)
 [![DOI](https://zenodo.org/badge/15146734.svg)](https://zenodo.org/badge/latestdoi/15146734)
 
-
-[![Build Status](https://travis-ci.com/whitews/FlowUtils.svg?branch=master)](https://travis-ci.com/whitews/FlowUtils)
+[![Tests](https://github.com/whitews/FlowUtils/actions/workflows/tests.yml/badge.svg)](https://github.com/whitews/FlowUtils/actions/workflows/tests.yml)
 [![Coverage](https://codecov.io/gh/whitews/FlowUtils/branch/master/graph/badge.svg)](https://codecov.io/gh/whitews/flowutils)
 [![Documentation Status](https://readthedocs.org/projects/flowutils/badge/?version=latest)](https://flowutils.readthedocs.io/en/latest/?badge=latest)
 
