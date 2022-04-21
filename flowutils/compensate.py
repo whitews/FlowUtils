@@ -1,3 +1,6 @@
+"""
+Utility functions related to compensation tasks
+"""
 import numpy as np
 import re
 import os
@@ -21,7 +24,7 @@ def get_spill(text):
 
 
 def _parse_multiline_matrix(matrix_text, fluoro_labels):
-    # first, we must find a valid header line and we will require that the matrix
+    # first, we must find a valid header line, then require that the matrix
     # follows on the next lines, ignoring any additional lines before or after
     # the header contains labels matching the PnN value(FCS text field)
     # and may be tab or comma delimited
@@ -241,7 +244,7 @@ def compensate(event_data, spill_matrix, fluoro_indices=None):
         will be compensated.
 
     :return: NumPy array of compensated event data. If fluoro_indices were given,
-        the data is returned in the column order given, with the non-fluorescent
+        the data is returned with the column order given, with the non-fluorescent
         columns unmodified.
     """
     data = event_data.copy()
@@ -274,7 +277,7 @@ def inverse_compensate(event_data, spill_matrix, fluoro_indices=None):
         will be un-compensated.
 
     :return: NumPy array of un-compensated event data. If fluoro_indices were given,
-        the data is returned in the column order given, with the non-fluorescent
+        the data is returned with the column order given, with the non-fluorescent
         columns unmodified.
     """
     data = event_data.copy()
