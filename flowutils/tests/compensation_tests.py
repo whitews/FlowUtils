@@ -1,3 +1,6 @@
+"""
+Tests for 'compensate' module
+"""
 import unittest
 import numpy as np
 import pathlib

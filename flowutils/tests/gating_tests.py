@@ -1,3 +1,6 @@
+"""
+Tests for 'gating' module
+"""
 import unittest
 import numpy as np
 
