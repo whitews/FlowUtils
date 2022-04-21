@@ -61,20 +61,3 @@ def points_in_polygon(poly_vertices, points):
     """
     wind_counts = gating_c.points_in_polygon(poly_vertices, len(poly_vertices), points, len(points))
     return wind_counts % 2 != 0
-
-
-def rotate_point_around_point(point, cov_mat, center_point=(0, 0)):
-    """
-    Rotates given point around center_point
-
-    :param point: Coordinates of point to rotate
-    :param cov_mat: Covariance matrix for the rotation
-    :param center_point: Coordinates of the reference rotation point. Default is the origin (0, 0)
-
-    :return: Rotated point coordinates
-    """
-    point_translated = np.array([point[0] - center_point[0], point[1] - center_point[1]])
-    point_rot = np.dot(point_translated, cov_mat)
-    point_untranslated = point_rot + center_point
-
-    return point_untranslated
