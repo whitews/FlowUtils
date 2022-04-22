@@ -28,8 +28,10 @@ improvements. For the most common platforms and Python versions, pre-built
 binaries are available in PyPI (and installable via pip).***
 
 ***If a pre-built binary of FlowUtils is not available for your environment,
-then the C extensions must be compiled using the source package. NumPy >=1.19 
+then the C extensions must be compiled using the source package. NumPy 
 must be installed prior to compiling FlowUtils. If compiling using `gcc`, version 5 or later is required.***
+
+***Compiling FlowUtils from source can also result in NumPy C API incompatibilities. [See the NumPy docs for more information](https://numpy.org/devdocs/user/depending_on_numpy.html#understanding-numpy-s-versioning-and-api-abi-stability).***
 
 ### From PyPI
 
