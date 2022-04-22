@@ -25,12 +25,11 @@ jobs:
       - name: Build wheels
         run: python -m cibuildwheel --output-dir wheelhouse
         env:
-          CIBW_BEFORE_BUILD: pip install numpy>=1.19
+          CIBW_BEFORE_BUILD: |
+            pip install numpy>=1.19
+            pip freeze
           CIBW_SKIP: pp* *-musllinux_* *-manylinux_i686 *-win32  # skip PyPy, musllinux, 32-bit Linux & win32 builds
           CIBW_BUILD: cp37-* cp38-* cp39-* cp310-*
-
-      - name: Print Python library versions
-        run: pip freeze
 
       - name: Store artifacts
         uses: actions/upload-artifact@v2
