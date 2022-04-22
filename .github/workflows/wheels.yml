@@ -29,6 +29,9 @@ jobs:
           CIBW_SKIP: pp* *-musllinux_* *-manylinux_i686 *-win32  # skip PyPy, musllinux, 32-bit Linux & win32 builds
           CIBW_BUILD: cp37-* cp38-* cp39-* cp310-*
 
+      - name: Print Python library versions
+        run: pip freeze
+
       - name: Store artifacts
         uses: actions/upload-artifact@v2
         with:
