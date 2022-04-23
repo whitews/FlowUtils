@@ -1,8 +1,9 @@
-# Configuration file for the Sphinx documentation builder.
-#
-# This file only contains a selection of the most common options. For a full
-# list see the documentation:
-# https://www.sphinx-doc.org/en/master/usage/configuration.html
+"""
+Configuration file for the Sphinx documentation builder.
+
+For a full list of Sphinx options, see the documentation:
+https://www.sphinx-doc.org/en/master/usage/configuration.html
+"""
 
 import os
 import sys
@@ -16,6 +17,9 @@ else:
 
 
 class Mock(MagicMock):
+    """
+    Mock class
+    """
     @classmethod
     def __getattr__(cls, name):
         return MagicMock()
