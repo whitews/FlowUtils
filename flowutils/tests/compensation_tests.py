@@ -122,8 +122,7 @@ class CompensationTestCase(unittest.TestCase):
                 continue
             fluoro_indices.append(i)
 
-        npy_data = np.fromfile(npy_file_path)
-        npy_data = npy_data.reshape(-1, len(channels))
+        npy_data = np.load(npy_file_path)
         spill = np.genfromtxt(spill_csv_path, delimiter=',', skip_header=True)
 
         comp_data = compensate.compensate(npy_data, spill, fluoro_indices=fluoro_indices)
@@ -149,8 +148,7 @@ class CompensationTestCase(unittest.TestCase):
                 continue
             fluoro_indices.append(i)
 
-        npy_data = np.fromfile(npy_file_path)
-        npy_data = npy_data.reshape(-1, len(channels))
+        npy_data = np.load(npy_file_path)
         spill = np.genfromtxt(spill_csv_path, delimiter=',', skip_header=True)
 
         comp_data = compensate.compensate(npy_data, spill, fluoro_indices=fluoro_indices)
