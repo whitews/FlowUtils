@@ -5,7 +5,8 @@
 [![PyPI version](https://img.shields.io/pypi/v/flowutils.svg?colorB=blue)](https://pypi.python.org/pypi/flowutils/)
 [![DOI](https://zenodo.org/badge/15146734.svg)](https://zenodo.org/badge/latestdoi/15146734)
 
-[![Tests](https://github.com/whitews/FlowUtils/actions/workflows/tests_master.yml/badge.svg)](https://github.com/whitews/FlowUtils/actions/workflows/tests_master.yml)
+[![Build & test (master)](https://github.com/whitews/FlowUtils/actions/workflows/tests_master.yml/badge.svg)](https://github.com/whitews/FlowUtils/actions/workflows/tests_master.yml)
+[![Build & test (develop)](https://github.com/whitews/FlowUtils/actions/workflows/tests_develop.yml/badge.svg)](https://github.com/whitews/FlowUtils/actions/workflows/tests_develop.yml)
 [![Coverage](https://codecov.io/gh/whitews/FlowUtils/branch/master/graph/badge.svg)](https://codecov.io/gh/whitews/flowutils)
 [![Documentation Status](https://readthedocs.org/projects/flowutils/badge/?version=latest)](https://flowutils.readthedocs.io/en/latest/?badge=latest)
 
@@ -42,7 +43,7 @@ pip install flowutils
 ### From GitHub source code
 
 ```
-pip install numpy>=1.19
+pip install numpy>=1.20
 
 git clone https://github.com/whitews/flowutils
 cd flowutils
