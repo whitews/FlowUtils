@@ -104,6 +104,16 @@ class CompensationTestCase(unittest.TestCase):
 
         self.assertIsInstance(matrix_array, np.ndarray)
 
+    def test_parse_compensation_matrix_missing_row(self):
+        comp_path = pathlib.Path("flowutils/tests/test_data/test_comp_matrix_missing_row.csv")
+
+        self.assertRaises(
+            ValueError,
+            compensate.parse_compensation_matrix,
+            comp_path,
+            test_comp_matrix_channel_labels
+        )
+
     def test_compensate(self):
         npy_data = np.load(test_data_npy_path)
         spill = np.genfromtxt(test_comp_csv_path, delimiter=',', skip_header=True)

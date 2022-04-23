@@ -90,7 +90,7 @@ def _convert_matrix_text_to_array(matrix_text, fluoro_labels, fluoro_indices):
     matrix_text = matrix_text.splitlines()
 
     if len(matrix_text) == 0:
-        raise ValueError("matrix text appears to be empty")
+        raise ValueError("Matrix text appears to be empty")
     elif len(matrix_text) == 1:
         # probably a single-line CSV from FCS metadata
         matrix, header = get_spill(matrix_text[0])
