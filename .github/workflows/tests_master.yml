@@ -25,7 +25,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - run: pip install coverage
-      - run: pip install numpy>=1.19
+      - run: pip install numpy>=1.20
       - run: python setup.py build_ext --inplace
 
       - name: Run tests with coverage
