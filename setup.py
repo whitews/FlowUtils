@@ -55,7 +55,7 @@ setup(
     license='BSD',
     url="https://github.com/whitews/flowutils",
     ext_modules=[logicle_extension, gating_extension],
-    install_requires=['numpy>=1.19'],
+    install_requires=['numpy>=1.20'],
     classifiers=[
         'Programming Language :: Python :: 3.10',
         'Programming Language :: Python :: 3.9',
