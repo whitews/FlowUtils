@@ -264,7 +264,7 @@ def compensate(event_data, spill_matrix, fluoro_indices=None):
         columns unmodified.
     """
     data = event_data.copy()
-    if len(fluoro_indices) > 0:
+    if fluoro_indices is not None:
         comp_data = data[:, fluoro_indices]
     else:
         comp_data = data
@@ -273,7 +273,7 @@ def compensate(event_data, spill_matrix, fluoro_indices=None):
     comp_data = np.linalg.solve(spill_matrix.T, comp_data.T).T
 
     # Re-insert compensated data columns
-    if len(fluoro_indices) > 0:
+    if fluoro_indices is not None:
         data[:, fluoro_indices] = comp_data
     else:
         data = comp_data
@@ -297,7 +297,7 @@ def inverse_compensate(event_data, spill_matrix, fluoro_indices=None):
         columns unmodified.
     """
     data = event_data.copy()
-    if len(fluoro_indices) > 0:
+    if fluoro_indices is not None:
         inv_comp_data = data[:, fluoro_indices]
     else:
         inv_comp_data = data
@@ -305,7 +305,7 @@ def inverse_compensate(event_data, spill_matrix, fluoro_indices=None):
     inv_comp_data = np.dot(inv_comp_data, spill_matrix)
 
     # Re-insert compensated data columns
-    if len(fluoro_indices) > 0:
+    if fluoro_indices is not None:
         data[:, fluoro_indices] = inv_comp_data
     else:
         data = inv_comp_data
