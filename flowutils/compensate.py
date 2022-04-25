@@ -23,6 +23,55 @@ def get_spill(text):
     return new_spill, markers
 
 
+def _validate_channel_label_sets(header_labels, fluoro_labels):
+    """
+    Validates the channel labels found in a spillover matrix header match
+    the expected fluorescent labels (given by user).
+
+    :param header_labels: list of channel labels from spillover matrix
+    :param fluoro_labels: list of channel labels expected
+    :return: None
+    :raises: ValueError on mismatching set of labels
+    """
+    label_diff = set(fluoro_labels).symmetric_difference(header_labels)
+
+    if len(label_diff) > 0:
+        in_fcs_not_comp = []
+        in_comp_not_fcs = []
+
+        for label in label_diff:
+            if label in fluoro_labels:
+                in_fcs_not_comp.append(label)
+            else:
+                in_comp_not_fcs.append(label)
+
+        error_message = "Matrix labels do not match given fluorescent labels"
+
+        if len(in_fcs_not_comp) > 0:
+            error_message = "\n".join(
+                [
+                    error_message,
+                    "",
+                    "Labels in FCS file not found in comp matrix (null channels?):",
+                    ", ".join(in_fcs_not_comp),
+                    "",
+                    "Null channels can be specified when creating a Sample instance"
+                ]
+            )
+
+        if len(in_comp_not_fcs) > 0:
+            error_message = "\n".join(
+                [
+                    error_message,
+                    "",
+                    "Labels in comp matrix not found in FCS file (wrong matrix chosen?):",
+                    ", ".join(in_comp_not_fcs)
+                ]
+            )
+
+        raise ValueError(error_message)
+
+
 def _parse_multiline_matrix(matrix_text, fluoro_labels):
     # first, we must find a valid header line, then require that the matrix
     # follows on the next lines, ignoring any additional lines before or after
@@ -97,47 +146,14 @@ def _convert_matrix_text_to_array(matrix_text, fluoro_labels, fluoro_indices):
     else:
         matrix, header = _parse_multiline_matrix(matrix_text, fluoro_labels)
 
-    label_diff = set(fluoro_labels).symmetric_difference(header)
+    # Verify our channel labels match.
+    # This is redundant for multiline matrix since the labels
+    # already had to match in order to parse the matrix text.
+    _validate_channel_label_sets(header, fluoro_labels)
 
     # re-order matrix according to provided fluoro label order
     idx_order = [header.index(fluoro_label) for fluoro_label in fluoro_labels]
     matrix = matrix[idx_order, :][:, idx_order]
-
-    if len(label_diff) > 0:
-        in_fcs_not_comp = []
-        in_comp_not_fcs = []
-
-        for label in label_diff:
-            if label in fluoro_labels:
-                in_fcs_not_comp.append(label)
-            else:
-                in_comp_not_fcs.append(label)
-
-        error_message = "Matrix labels do not match given fluorescent labels"
-
-        if len(in_fcs_not_comp) > 0:
-            error_message = "\n".join(
-                [
-                    error_message,
-                    "",
-                    "Labels in FCS file not found in comp matrix (null channels?):",
-                    ", ".join(in_fcs_not_comp),
-                    "",
-                    "Null channels can be specified when creating a Sample instance"
-                ]
-            )
-
-        if len(in_comp_not_fcs) > 0:
-            error_message = "\n".join(
-                [
-                    error_message,
-                    "",
-                    "Labels in comp matrix not found in FCS file (wrong matrix chosen?):",
-                    ", ".join(in_comp_not_fcs)
-                ]
-            )
-
-        raise ValueError(error_message)
 
     header_channel_numbers = []
 
