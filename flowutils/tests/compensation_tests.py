@@ -176,3 +176,17 @@ class CompensationTestCase(unittest.TestCase):
         )
 
         np.testing.assert_almost_equal(inv_comp_data, npy_data, 10)
+
+    @staticmethod
+    def test_compensate_no_indices():
+        # test for compensate & inverse compensate
+        npy_data = np.load(test_data_npy_path)
+        spill = np.genfromtxt(test_comp_csv_path, delimiter=',', skip_header=True)
+
+        all_fluoro_data = npy_data[:, test_data_fluoro_indices]
+
+        # call both without fluoro_indices kwarg (defaults to None)
+        comp_data = compensate.compensate(all_fluoro_data, spill)
+        inv_comp_data = compensate.inverse_compensate(comp_data, spill)
+
+        np.testing.assert_almost_equal(inv_comp_data, all_fluoro_data, 10)
