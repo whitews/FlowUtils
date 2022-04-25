@@ -100,7 +100,10 @@ class CompensationTestCase(unittest.TestCase):
     def test_parse_compensation_matrix_from_path(self):
         comp_path = pathlib.Path(test_comp_csv_path)
 
-        matrix_array = compensate.parse_compensation_matrix(comp_path, test_comp_matrix_channel_labels)
+        matrix_array = compensate.parse_compensation_matrix(
+            comp_path,
+            test_comp_matrix_channel_labels
+        )
 
         self.assertIsInstance(matrix_array, np.ndarray)
 
@@ -111,6 +114,14 @@ class CompensationTestCase(unittest.TestCase):
             ValueError,
             compensate.parse_compensation_matrix,
             comp_path,
+            test_comp_matrix_channel_labels
+        )
+
+    def test_parse_compensation_matrix_empty_matrix(self):
+        self.assertRaises(
+            ValueError,
+            compensate.parse_compensation_matrix,
+            "",
             test_comp_matrix_channel_labels
         )
 
