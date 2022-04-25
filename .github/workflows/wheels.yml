@@ -14,7 +14,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
         with:
-          ref: 'develop'
+          ref: 'master'
 
       - name: Setup Python
         uses: actions/setup-python@v2
@@ -47,7 +47,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
         with:
-          ref: 'develop'
+          ref: 'master'
 
       - name: Setup Python
         uses: actions/setup-python@v2
@@ -76,7 +76,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
         with:
-          ref: 'develop'
+          ref: 'master'
 
       - name: Setup Python
         uses: actions/setup-python@v2
