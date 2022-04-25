@@ -3,6 +3,14 @@ Setup script for the FlowUtils package
 """
 from setuptools import setup, Extension, dist
 
+# read in version string
+VERSION_FILE = 'flowutils/_version.py'
+__version__ = None  # to avoid inspection warning and check if __version__ was loaded
+exec(open(VERSION_FILE).read())
+
+if __version__ is None:
+    raise RuntimeError("__version__ string not found in file %s" % VERSION_FILE)
+
 # NumPy is needed to build
 # This retrieves a version at build time compatible with run time version
 dist.Distribution().fetch_build_eggs(['numpy>=1.19'])
@@ -36,7 +44,7 @@ gating_extension = Extension(
 
 setup(
     name='FlowUtils',
-    version='1.0.0b0',
+    version=__version__,
     packages=['flowutils'],
     package_data={'': []},
     description='Flow Cytometry Standard Utilities',
@@ -47,8 +55,9 @@ setup(
     license='BSD',
     url="https://github.com/whitews/flowutils",
     ext_modules=[logicle_extension, gating_extension],
-    install_requires=['numpy>=1.19'],
+    install_requires=['numpy>=1.20'],
     classifiers=[
+        'Programming Language :: Python :: 3.10',
         'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.7'

@@ -1,3 +1,6 @@
+"""
+Utility functions related to compensation tasks
+"""
 import numpy as np
 import re
 import os
@@ -20,8 +23,57 @@ def get_spill(text):
     return new_spill, markers
 
 
+def _validate_channel_label_sets(header_labels, fluoro_labels):
+    """
+    Validates the channel labels found in a spillover matrix header match
+    the expected fluorescent labels (given by user).
+
+    :param header_labels: list of channel labels from spillover matrix
+    :param fluoro_labels: list of channel labels expected
+    :return: None
+    :raises: ValueError on mismatching set of labels
+    """
+    label_diff = set(fluoro_labels).symmetric_difference(header_labels)
+
+    if len(label_diff) > 0:
+        in_fcs_not_comp = []
+        in_comp_not_fcs = []
+
+        for label in label_diff:
+            if label in fluoro_labels:
+                in_fcs_not_comp.append(label)
+            else:
+                in_comp_not_fcs.append(label)
+
+        error_message = "Matrix labels do not match given fluorescent labels"
+
+        if len(in_fcs_not_comp) > 0:
+            error_message = "\n".join(
+                [
+                    error_message,
+                    "",
+                    "Labels in FCS file not found in comp matrix (null channels?):",
+                    ", ".join(in_fcs_not_comp),
+                    "",
+                    "Null channels can be specified when creating a Sample instance"
+                ]
+            )
+
+        if len(in_comp_not_fcs) > 0:
+            error_message = "\n".join(
+                [
+                    error_message,
+                    "",
+                    "Labels in comp matrix not found in FCS file (wrong matrix chosen?):",
+                    ", ".join(in_comp_not_fcs)
+                ]
+            )
+
+        raise ValueError(error_message)
+
+
 def _parse_multiline_matrix(matrix_text, fluoro_labels):
-    # first, we must find a valid header line and we will require that the matrix
+    # first, we must find a valid header line, then require that the matrix
     # follows on the next lines, ignoring any additional lines before or after
     # the header contains labels matching the PnN value(FCS text field)
     # and may be tab or comma delimited
@@ -87,54 +139,21 @@ def _convert_matrix_text_to_array(matrix_text, fluoro_labels, fluoro_indices):
     matrix_text = matrix_text.splitlines()
 
     if len(matrix_text) == 0:
-        raise ValueError("matrix text appears to be empty")
+        raise ValueError("Matrix text appears to be empty")
     elif len(matrix_text) == 1:
         # probably a single-line CSV from FCS metadata
         matrix, header = get_spill(matrix_text[0])
     else:
         matrix, header = _parse_multiline_matrix(matrix_text, fluoro_labels)
 
-    label_diff = set(fluoro_labels).symmetric_difference(header)
+    # Verify our channel labels match.
+    # This is redundant for multiline matrix since the labels
+    # already had to match in order to parse the matrix text.
+    _validate_channel_label_sets(header, fluoro_labels)
 
     # re-order matrix according to provided fluoro label order
     idx_order = [header.index(fluoro_label) for fluoro_label in fluoro_labels]
     matrix = matrix[idx_order, :][:, idx_order]
-
-    if len(label_diff) > 0:
-        in_fcs_not_comp = []
-        in_comp_not_fcs = []
-
-        for label in label_diff:
-            if label in fluoro_labels:
-                in_fcs_not_comp.append(label)
-            else:
-                in_comp_not_fcs.append(label)
-
-        error_message = "Matrix labels do not match given fluorescent labels"
-
-        if len(in_fcs_not_comp) > 0:
-            error_message = "\n".join(
-                [
-                    error_message,
-                    "",
-                    "Labels in FCS file not found in comp matrix (null channels?):",
-                    ", ".join(in_fcs_not_comp),
-                    "",
-                    "Null channels can be specified when creating a Sample instance"
-                ]
-            )
-
-        if len(in_comp_not_fcs) > 0:
-            error_message = "\n".join(
-                [
-                    error_message,
-                    "",
-                    "Labels in comp matrix not found in FCS file (wrong matrix chosen?):",
-                    ", ".join(in_comp_not_fcs)
-                ]
-            )
-
-        raise ValueError(error_message)
 
     header_channel_numbers = []
 
@@ -241,11 +260,11 @@ def compensate(event_data, spill_matrix, fluoro_indices=None):
         will be compensated.
 
     :return: NumPy array of compensated event data. If fluoro_indices were given,
-        the data is returned in the column order given, with the non-fluorescent
+        the data is returned with the column order given, with the non-fluorescent
         columns unmodified.
     """
     data = event_data.copy()
-    if len(fluoro_indices) > 0:
+    if fluoro_indices is not None:
         comp_data = data[:, fluoro_indices]
     else:
         comp_data = data
@@ -254,7 +273,7 @@ def compensate(event_data, spill_matrix, fluoro_indices=None):
     comp_data = np.linalg.solve(spill_matrix.T, comp_data.T).T
 
     # Re-insert compensated data columns
-    if len(fluoro_indices) > 0:
+    if fluoro_indices is not None:
         data[:, fluoro_indices] = comp_data
     else:
         data = comp_data
@@ -274,11 +293,11 @@ def inverse_compensate(event_data, spill_matrix, fluoro_indices=None):
         will be un-compensated.
 
     :return: NumPy array of un-compensated event data. If fluoro_indices were given,
-        the data is returned in the column order given, with the non-fluorescent
+        the data is returned with the column order given, with the non-fluorescent
         columns unmodified.
     """
     data = event_data.copy()
-    if len(fluoro_indices) > 0:
+    if fluoro_indices is not None:
         inv_comp_data = data[:, fluoro_indices]
     else:
         inv_comp_data = data
@@ -286,31 +305,9 @@ def inverse_compensate(event_data, spill_matrix, fluoro_indices=None):
     inv_comp_data = np.dot(inv_comp_data, spill_matrix)
 
     # Re-insert compensated data columns
-    if len(fluoro_indices) > 0:
+    if fluoro_indices is not None:
         data[:, fluoro_indices] = inv_comp_data
     else:
         data = inv_comp_data
 
     return data
-
-
-def gen_spill_matrix(npy, stain_index):
-    """
-    Generates spillover matrix for one FCS file (presumably from beads)
-
-    :param npy: the numpy array of the bead data
-    :param stain_index: index of the stained channel
-
-    :return: Compensation matrix as a NumPy array (without headers)
-    """
-
-    # get the median for all unstained columns, zero for stained index
-    spill = list()
-    for column, i in enumerate(npy.T):
-        if i == stain_index:
-            spill.append(0.0)
-            continue
-        else:
-            spill.append(np.median(column))
-        
-    return spill

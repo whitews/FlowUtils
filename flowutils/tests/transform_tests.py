@@ -1,3 +1,6 @@
+"""
+Tests for 'transform' module
+"""
 import unittest
 import numpy as np
 

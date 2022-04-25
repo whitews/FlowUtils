@@ -1,8 +1,9 @@
-# Configuration file for the Sphinx documentation builder.
-#
-# This file only contains a selection of the most common options. For a full
-# list see the documentation:
-# https://www.sphinx-doc.org/en/master/usage/configuration.html
+"""
+Configuration file for the Sphinx documentation builder.
+
+For a full list of Sphinx options, see the documentation:
+https://www.sphinx-doc.org/en/master/usage/configuration.html
+"""
 
 import os
 import sys
@@ -16,12 +17,15 @@ else:
 
 
 class Mock(MagicMock):
+    """
+    Mock class
+    """
     @classmethod
     def __getattr__(cls, name):
         return MagicMock()
 
 
-MOCK_MODULES = ['flowutils.logicle_c']
+MOCK_MODULES = ['flowutils.logicle_c', 'flowutils.gating_c']
 sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
 
 # -- Path setup --------------------------------------------------------------
