@@ -117,6 +117,32 @@ class CompensationTestCase(unittest.TestCase):
             test_comp_matrix_channel_labels
         )
 
+    def test_validate_channel_label_sets_extra_header_label(self):
+        header_labels = test_comp_matrix_channel_labels.copy()
+        fluoro_labels = test_comp_matrix_channel_labels.copy()
+
+        header_labels.append('extra_label')
+
+        self.assertRaises(
+            ValueError,
+            compensate._validate_channel_label_sets,
+            header_labels,
+            fluoro_labels
+        )
+
+    def test_validate_channel_label_sets_missing_header_label(self):
+        header_labels = test_comp_matrix_channel_labels.copy()
+        fluoro_labels = test_comp_matrix_channel_labels.copy()
+
+        header_labels.pop()
+
+        self.assertRaises(
+            ValueError,
+            compensate._validate_channel_label_sets,
+            header_labels,
+            fluoro_labels
+        )
+
     def test_parse_compensation_matrix_empty_matrix(self):
         self.assertRaises(
             ValueError,
