@@ -13,7 +13,8 @@ if __version__ is None:
 
 # NumPy is needed to build
 # This retrieves a version at build time compatible with run time version
-dist.Distribution().fetch_build_eggs(['numpy>=1.19'])
+# TODO: commented out below, need to replace w/ pyproject.toml
+# dist.Distribution().fetch_build_eggs(['oldest-supported-numpy'])
 
 # override inspection for import not at top of file
 # this has to be imported here, after fetching the NumPy egg
