@@ -1,7 +1,8 @@
 """
 Setup script for the FlowUtils package
 """
-from setuptools import setup, Extension, dist
+from setuptools import setup, Extension
+import numpy as np  # NumPy is needed to build C extensions
 
 # read in version string
 VERSION_FILE = 'flowutils/_version.py'
@@ -10,15 +11,6 @@ exec(open(VERSION_FILE).read())
 
 if __version__ is None:
     raise RuntimeError("__version__ string not found in file %s" % VERSION_FILE)
-
-# NumPy is needed to build
-# This retrieves a version at build time compatible with run time version
-# TODO: commented out below, need to replace w/ pyproject.toml
-# dist.Distribution().fetch_build_eggs(['oldest-supported-numpy'])
-
-# override inspection for import not at top of file
-# this has to be imported here, after fetching the NumPy egg
-import numpy as np  # noqa: E402
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
@@ -45,7 +37,7 @@ gating_extension = Extension(
 
 setup(
     name='FlowUtils',
-    version=__version__,
+    version=__version__,  # noqa PyTypeChecker
     packages=['flowutils'],
     package_data={'': []},
     description='Flow Cytometry Standard Utilities',
@@ -58,6 +50,7 @@ setup(
     ext_modules=[logicle_extension, gating_extension],
     install_requires=['numpy>=1.20'],
     classifiers=[
+        'Programming Language :: Python :: 3.11',
         'Programming Language :: Python :: 3.10',
         'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: 3.8',
