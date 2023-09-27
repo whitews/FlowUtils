@@ -1,4 +1,4 @@
-name: Build & test {{ github.ref-branch }}
+name: Build & test (master)
 
 on:
   push:
