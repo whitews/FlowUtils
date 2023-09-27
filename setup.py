@@ -5,7 +5,7 @@ from setuptools import setup, Extension
 import numpy as np  # NumPy is needed to build C extensions
 
 # read in version string
-VERSION_FILE = 'flowutils/_version.py'
+VERSION_FILE = 'src/flowutils/_version.py'
 __version__ = None  # to avoid inspection warning and check if __version__ was loaded
 exec(open(VERSION_FILE).read())
 
@@ -18,20 +18,20 @@ with open("README.md", "r") as fh:
 logicle_extension = Extension(
     'flowutils.logicle_c',
     sources=[
-        'flowutils/logicle_c_ext/_logicle.c',
-        'flowutils/logicle_c_ext/logicle.c'
+        'src/flowutils/logicle_c_ext/_logicle.c',
+        'src/flowutils/logicle_c_ext/logicle.c'
     ],
-    include_dirs=[np.get_include(), 'flowutils/logicle_c_ext'],
+    include_dirs=[np.get_include(), 'src/flowutils/logicle_c_ext'],
     extra_compile_args=['-std=c99']
 )
 
 gating_extension = Extension(
     'flowutils.gating_c',
     sources=[
-        'flowutils/gating_c_ext/_gate_helpers.c',
-        'flowutils/gating_c_ext/gate_helpers.c'
+        'src/flowutils/gating_c_ext/_gate_helpers.c',
+        'src/flowutils/gating_c_ext/gate_helpers.c'
     ],
-    include_dirs=[np.get_include(), 'flowutils/gating_c_ext'],
+    include_dirs=[np.get_include(), 'src/flowutils/gating_c_ext'],
     extra_compile_args=['-std=c99']
 )
 
@@ -39,6 +39,7 @@ setup(
     name='FlowUtils',
     version=__version__,  # noqa PyTypeChecker
     packages=['flowutils'],
+    package_dir={'': "src"},
     package_data={'': []},
     description='Flow Cytometry Standard Utilities',
     long_description=long_description,

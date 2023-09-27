@@ -39,8 +39,8 @@ fcs_spill_header = [
     'G560-A'
 ]
 
-test_data_npy_path = "flowutils/tests/test_data/test_comp_event_data.npy"
-test_comp_csv_path = "flowutils/tests/test_data/test_comp_matrix.csv"
+test_data_npy_path = "tests/test_data/test_comp_event_data.npy"
+test_comp_csv_path = "tests/test_data/test_comp_matrix.csv"
 test_data_channels = [
     'FSC-A', 'FSC-W', 'SSC-A',
     'Ax488-A', 'PE-A', 'PE-TR-A',
@@ -108,7 +108,7 @@ class CompensationTestCase(unittest.TestCase):
         self.assertIsInstance(matrix_array, np.ndarray)
 
     def test_parse_compensation_matrix_missing_row(self):
-        comp_path = pathlib.Path("flowutils/tests/test_data/test_comp_matrix_missing_row.csv")
+        comp_path = pathlib.Path("tests/test_data/test_comp_matrix_missing_row.csv")
 
         self.assertRaises(
             ValueError,
