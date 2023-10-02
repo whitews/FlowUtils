@@ -1,3 +1,2 @@
 include LICENSE
-recursive-include flowutils *.h
-prune flowutils/tests/
+recursive-include src/flowutils *.h
