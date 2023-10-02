@@ -32,7 +32,7 @@ jobs:
 
       - name: Run tests with coverage
         run: |
-          coverage run --source flowutils --omit="flowutils/tests/*" run_tests.py
+          coverage run --source flowutils run_tests.py
           coverage xml
 
       - name: Upload coverage to Codecov
