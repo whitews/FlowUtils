@@ -34,6 +34,7 @@ jobs:
       - name: Store artifacts
         uses: actions/upload-artifact@v3
         with:
+          name: python-package-distributions
           path: wheelhouse/*.whl
 
   package_source:
@@ -60,6 +61,7 @@ jobs:
       - name: Store artifacts
         uses: actions/upload-artifact@v3
         with:
+          name: python-package-distributions
           path: ./dist/*.tar.gz
 
   retrieve_build_files:
@@ -73,7 +75,10 @@ jobs:
       - name: Download build files
         uses: actions/download-artifact@v3
         with:
+          name: python-package-distributions
           path: dist/
 
       - name: List files
-        run: ls -lh dist
+        run: |
+          pwd
+          ls -lh dist
