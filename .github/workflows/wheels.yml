@@ -81,4 +81,4 @@ jobs:
       - name: List files
         run: |
           pwd
-          ls -lh dist
+          ls -hog dist
