@@ -14,10 +14,10 @@ class GatingTestCase(unittest.TestCase):
         coords = [12.99701, 16.22941]
         distance_square = 1.0
 
-        npy_file_path = "flowutils/tests/test_data/event_data_for_ellipse_test.npy"
+        npy_file_path = "tests/test_data/event_data_for_ellipse_test.npy"
         event_data = np.load(npy_file_path)
 
-        truth_path = 'flowutils/tests/test_data/truth/Results_Ellipse1.txt'
+        truth_path = 'tests/test_data/truth/Results_Ellipse1.txt'
         truth = np.genfromtxt(truth_path, delimiter=',').astype('bool')
 
         result = gating.points_in_ellipsoid(
@@ -39,10 +39,10 @@ class GatingTestCase(unittest.TestCase):
             ]
         )
 
-        npy_file_path = "flowutils/tests/test_data/event_data_for_poly_test.npy"
+        npy_file_path = "tests/test_data/event_data_for_poly_test.npy"
         event_data = np.load(npy_file_path)
 
-        truth_path = 'flowutils/tests/test_data/truth/Results_Polygon4.txt'
+        truth_path = 'tests/test_data/truth/Results_Polygon4.txt'
         truth = np.genfromtxt(truth_path, delimiter=',').astype('bool')
 
         result = gating.points_in_polygon(poly_vertices, event_data)

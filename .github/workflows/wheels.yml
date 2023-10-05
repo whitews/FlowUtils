@@ -8,7 +8,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-22.04, windows-2022, macos-10.15]
+        os: [ubuntu-22.04, windows-2022, macos-12]
 
     steps:
       - name: Checkout
@@ -18,6 +18,8 @@ jobs:
 
       - name: Setup Python
         uses: actions/setup-python@v4
+        with:
+          python-version: 3.11
 
       - name: Install cibuildwheel
         run: python -m pip install cibuildwheel==2.15.0
@@ -25,51 +27,18 @@ jobs:
       - name: Build wheels
         run: python -m cibuildwheel --output-dir wheelhouse
         env:
-          CIBW_BEFORE_BUILD: |
-            pip install numpy==1.21.6
-            pip freeze
           CIBW_SKIP: pp* *-musllinux_* *-manylinux_i686 *-win32  # skip PyPy, musllinux, 32-bit Linux & win32 builds
-          CIBW_BUILD: cp37-* cp38-* cp39-* cp310-* cp311-*
+          CIBW_ARCHS_MACOS: x86_64 arm64
+          CIBW_BUILD: cp37-* cp38-* cp39-* cp310-* cp311-* cp312-*
 
       - name: Store artifacts
         uses: actions/upload-artifact@v3
         with:
-          path: wheelhouse/*.whl
-
-  build_wheels_apple_silicon:
-    name: Build wheels on ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [macos-12]
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          ref: 'master'
-
-      - name: Setup Python
-        uses: actions/setup-python@v4
-
-      - name: Install cibuildwheel
-        run: python -m pip install cibuildwheel==2.15.0
-
-      - name: Build wheels
-        run: python -m cibuildwheel --output-dir wheelhouse
-        env:
-          CIBW_BEFORE_BUILD: pip install numpy==1.21.6
-          CIBW_SKIP: pp*  # skip PyPy
-          CIBW_BUILD: cp38-* cp39-* cp310-*  cp311-*  # Only Python 3.8 - 3.11
-          CIBW_ARCHS_MACOS: arm64  # Only arm64 for Apple Silicon builds
-
-      - name: Store artifacts
-        uses: actions/upload-artifact@v3
-        with:
+          name: python-package-distributions
           path: wheelhouse/*.whl
 
   package_source:
-    name: Package source
+    name: Package source distribution
     runs-on: ubuntu-22.04
 
     steps:
@@ -80,11 +49,36 @@ jobs:
 
       - name: Setup Python
         uses: actions/setup-python@v4
+        with:
+          python-version: 3.11
+
+      - name: Install build
+        run: python -m pip install build
 
       - name: Run sdist
-        run: python setup.py sdist
+        run: python -m build --sdist
 
       - name: Store artifacts
         uses: actions/upload-artifact@v3
         with:
+          name: python-package-distributions
           path: ./dist/*.tar.gz
+
+  retrieve_build_files:
+    name: Retrieve build files
+    needs:
+      - build_wheels
+      - package_source
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Download build files
+        uses: actions/download-artifact@v3
+        with:
+          name: python-package-distributions
+          path: dist/
+
+      - name: List files
+        run: |
+          pwd
+          ls -hog dist

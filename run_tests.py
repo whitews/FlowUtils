@@ -1,4 +1,4 @@
 import unittest
 
 
-unittest.main('flowutils.tests')
+unittest.main('tests')
