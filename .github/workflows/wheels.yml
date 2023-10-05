@@ -37,7 +37,7 @@ jobs:
           path: wheelhouse/*.whl
 
   package_source:
-    name: Package source
+    name: Package source distribution
     runs-on: ubuntu-22.04
 
     steps:
@@ -61,3 +61,19 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           path: ./dist/*.tar.gz
+
+  retrieve_build_files:
+    name: Retrieve build files
+    needs:
+      - build_wheels
+      - package_source
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Download build files
+        uses: actions/download-artifact@v3
+        with:
+          path: dist/
+
+      - name: List files
+        run: ls -lh dist
