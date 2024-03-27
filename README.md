@@ -24,15 +24,11 @@ GatingML & FlowJo 10 support, see the related
 
 ## Installation
 
-***Note: FlowUtils uses C extensions for significant performance 
-improvements. For the most common platforms and Python versions, pre-built
-binaries are available in PyPI (and installable via pip).***
-
-***If a pre-built binary of FlowUtils is not available for your environment,
-then the C extensions must be compiled using the source package. NumPy 
-must be installed prior to compiling FlowUtils. If compiling using `gcc`, version 5 or later is required.***
-
-***Compiling FlowUtils from source can also result in NumPy C API incompatibilities. [See the NumPy docs for more information](https://numpy.org/devdocs/user/depending_on_numpy.html#understanding-numpy-s-versioning-and-api-abi-stability).***
+FlowUtils uses C extensions for significant performance improvements.
+For the most common platforms and Python versions, pre-built binaries
+are available in PyPI (and installable via pip). If a pre-built binary
+of FlowUtils is not available for your environment, then the C
+extensions must be compiled using the source package.
 
 ### From PyPI
 
@@ -43,10 +39,11 @@ pip install flowutils
 ### From GitHub source code
 
 ```
-pip install numpy>=1.20
-
 git clone https://github.com/whitews/flowutils
 cd flowutils
-
-python setup.py install
+pip install .
 ```
+
+## Documentation
+
+[API Documentation is available here.](https://flowutils.readthedocs.io/en/latest/?badge=latest)
