@@ -34,7 +34,7 @@ jobs:
       - name: Store artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: python-package-distributions
+          name: python-package-distributions-${{ matrix.os }}
           path: wheelhouse/*.whl
           merge-multiple: true
 
@@ -62,9 +62,8 @@ jobs:
       - name: Store artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: python-package-distributions
+          name: python-package-distributions-src
           path: ./dist/*.tar.gz
-          merge-multiple: true
 
   retrieve_build_files:
     name: Retrieve build files
@@ -75,10 +74,11 @@ jobs:
 
     steps:
       - name: Download build files
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
-          name: python-package-distributions
           path: dist/
+          pattern: python-package-distributions-*
+          merge-multiple: true
 
       - name: List files
         run: |
