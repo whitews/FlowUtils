@@ -36,6 +36,7 @@ jobs:
         with:
           name: python-package-distributions
           path: wheelhouse/*.whl
+          merge-multiple: true
 
   package_source:
     name: Package source distribution
@@ -63,6 +64,7 @@ jobs:
         with:
           name: python-package-distributions
           path: ./dist/*.tar.gz
+          merge-multiple: true
 
   retrieve_build_files:
     name: Retrieve build files
