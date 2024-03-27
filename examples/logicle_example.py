@@ -8,5 +8,3 @@ events = numpy.reshape(fd.events, (-1, fd.channel_count))
 fluoro_indices = [0, 1]
 
 xform_events = flowutils.transforms.logicle(events, fluoro_indices)
-
-print('asdf')
