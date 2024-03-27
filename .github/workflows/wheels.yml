@@ -32,7 +32,7 @@ jobs:
         run: python -m cibuildwheel --output-dir wheelhouse
 
       - name: Store artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: python-package-distributions
           path: wheelhouse/*.whl
@@ -59,7 +59,7 @@ jobs:
         run: python -m build --sdist
 
       - name: Store artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: python-package-distributions
           path: ./dist/*.tar.gz
