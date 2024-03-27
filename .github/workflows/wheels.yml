@@ -76,10 +76,9 @@ jobs:
         uses: actions/upload-artifact/merge@v4
         with:
           name: python-package-distributions-all
-          path: dist/
           pattern: python-package-distributions-*
 
       - name: List files
         run: |
           pwd
-          ls -hog dist
+          ls -hog
