@@ -77,8 +77,4 @@ jobs:
         with:
           name: python-package-distributions-all
           pattern: python-package-distributions-*
-
-      - name: List files
-        run: |
-          pwd
-          ls -hog
+          delete-merged: true
