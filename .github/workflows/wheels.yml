@@ -17,7 +17,7 @@ jobs:
           ref: 'master'
 
       - name: Setup Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: 3.11
 
@@ -32,9 +32,9 @@ jobs:
         run: python -m cibuildwheel --output-dir wheelhouse
 
       - name: Store artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: python-package-distributions
+          name: python-package-distributions-${{ matrix.os }}
           path: wheelhouse/*.whl
 
   package_source:
@@ -48,7 +48,7 @@ jobs:
           ref: 'master'
 
       - name: Setup Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: 3.11
 
@@ -59,26 +59,22 @@ jobs:
         run: python -m build --sdist
 
       - name: Store artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: python-package-distributions
+          name: python-package-distributions-src
           path: ./dist/*.tar.gz
 
-  retrieve_build_files:
-    name: Retrieve build files
+  merge_build_files:
+    name: Merge build files
     needs:
       - build_wheels
       - package_source
     runs-on: ubuntu-22.04
 
     steps:
-      - name: Download build files
-        uses: actions/download-artifact@v3
+      - name: Merge build files
+        uses: actions/upload-artifact/merge@v4
         with:
-          name: python-package-distributions
-          path: dist/
-
-      - name: List files
-        run: |
-          pwd
-          ls -hog dist
+          name: python-package-distributions-all
+          pattern: python-package-distributions-*
+          delete-merged: true

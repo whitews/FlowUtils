@@ -8,3 +8,4 @@ on:
 jobs:
   test:
     uses: whitews/flowutils/.github/workflows/build-test-base.yml@master
+    secrets: inherit
