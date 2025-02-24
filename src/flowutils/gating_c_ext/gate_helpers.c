@@ -70,7 +70,7 @@ int * points_in_polygon(int *wind_counts, double *poly_vertices, int vert_count,
 
     This implementation is based on the C implementation here:
 
-        http://geomalgorithms.com/a03-_inclusion.html
+        http://geomalgorithms.com/a03-_inclusion.html % This website seems to be a scam now ?
 
     Original copyright notice:
         Copyright 2000 softSurfer, 2012 Dan Sunday
