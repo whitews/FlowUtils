@@ -68,12 +68,15 @@ int * points_in_polygon(int *wind_counts, double *poly_vertices, int vert_count,
     winding number method and is robust to complex polygons with crossing
     boundaries, including the presence of 'holes' created by boundary crosses.
 
-    This implementation is based on the C implementation here:
-
-        http://geomalgorithms.com/a03-_inclusion.html
-
+    This implementation is based on the C implementation by Dan Sunday.
     Original copyright notice:
         Copyright 2000 softSurfer, 2012 Dan Sunday
+
+    The website containing the above implementation is no longer available,
+    but was archived by the Wayback Machine. The last archived version is
+    available here:
+
+        https://web.archive.org/web/20210504233957/http://geomalgorithms.com/a03-_inclusion.html
 
     :param poly_vertices: Polygon vertices (array of 2-D points)
     :param vert_count: Number of vertices in polygon

@@ -1,4 +1,5 @@
 #include <Python.h>
+#define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION // to avoid a warning
 #include <numpy/arrayobject.h>
 #include "logicle.h"
 
@@ -11,12 +12,10 @@ static PyObject *wrap_logicle_scale(PyObject *self, PyObject *args) {
         return NULL;
     }
 
-    // read the numpy array
-    PyObject *x_array = PyArray_FROM_OTF(x, NPY_DOUBLE, NPY_IN_ARRAY);
-
+    PyArrayObject *x_array = (PyArrayObject *) PyArray_FROM_OTF(x, NPY_DOUBLE, NPY_ARRAY_IN_ARRAY);
     // throw exception if the array doesn't exist
-    if (x_array == NULL) {
-        Py_XDECREF(x_array);
+    if (!x_array) {
+        PyErr_SetString(PyExc_RuntimeError, "Failed to convert x to NumPy array");
         return NULL;
     }
 
@@ -29,7 +28,7 @@ static PyObject *wrap_logicle_scale(PyObject *self, PyObject *args) {
     // now we can call our function!
     logicle_scale(t, w, m, a, xc, n);
 
-    return x_array;
+    return (PyObject *) x_array;
 }
 
 static PyObject *wrap_logicle_inverse(PyObject *self, PyObject *args) {
@@ -42,11 +41,9 @@ static PyObject *wrap_logicle_inverse(PyObject *self, PyObject *args) {
     }
 
     // read the numpy array
-    PyObject *x_array = PyArray_FROM_OTF(x, NPY_DOUBLE, NPY_IN_ARRAY);
-
-    // throw exception if the array doesn't exist
-    if (x_array == NULL) {
-        Py_XDECREF(x_array);
+    PyArrayObject *x_array = (PyArrayObject *) PyArray_FROM_OTF(x, NPY_DOUBLE, NPY_ARRAY_IN_ARRAY);
+    if (!x_array) {
+        PyErr_SetString(PyExc_RuntimeError, "Failed to convert x to NumPy array");
         return NULL;
     }
 
@@ -59,7 +56,7 @@ static PyObject *wrap_logicle_inverse(PyObject *self, PyObject *args) {
     // now we can call our function!
     logicle_inverse(t, w, m, a, xc, n);
 
-    return x_array;
+    return (PyObject *) x_array;
 }
 
 static PyObject *wrap_hyperlog_scale(PyObject *self, PyObject *args) {
@@ -72,11 +69,9 @@ static PyObject *wrap_hyperlog_scale(PyObject *self, PyObject *args) {
     }
 
     // read the numpy array
-    PyObject *x_array = PyArray_FROM_OTF(x, NPY_DOUBLE, NPY_IN_ARRAY);
-
-    // throw exception if the array doesn't exist
-    if (x_array == NULL) {
-        Py_XDECREF(x_array);
+    PyArrayObject *x_array = (PyArrayObject *) PyArray_FROM_OTF(x, NPY_DOUBLE, NPY_ARRAY_IN_ARRAY);
+    if (!x_array) {
+        PyErr_SetString(PyExc_RuntimeError, "Failed to convert x to NumPy array");
         return NULL;
     }
 
@@ -89,7 +84,7 @@ static PyObject *wrap_hyperlog_scale(PyObject *self, PyObject *args) {
     // now we can call our function!
     hyperlog_scale(t, w, m, a, xc, n);
 
-    return x_array;
+    return (PyObject *) x_array;
 }
 
 static PyObject *wrap_hyperlog_inverse(PyObject *self, PyObject *args) {
@@ -102,11 +97,9 @@ static PyObject *wrap_hyperlog_inverse(PyObject *self, PyObject *args) {
     }
 
     // read the numpy array
-    PyObject *x_array = PyArray_FROM_OTF(x, NPY_DOUBLE, NPY_IN_ARRAY);
-
-    // throw exception if the array doesn't exist
-    if (x_array == NULL) {
-        Py_XDECREF(x_array);
+    PyArrayObject *x_array = (PyArrayObject *) PyArray_FROM_OTF(x, NPY_DOUBLE, NPY_ARRAY_IN_ARRAY);
+    if (!x_array) {
+        PyErr_SetString(PyExc_RuntimeError, "Failed to convert x to NumPy array");
         return NULL;
     }
 
@@ -119,7 +112,7 @@ static PyObject *wrap_hyperlog_inverse(PyObject *self, PyObject *args) {
     // now we can call our function!
     hyperlog_inverse(t, w, m, a, xc, n);
 
-    return x_array;
+    return (PyObject *) x_array;
 }
 
 
@@ -133,29 +126,41 @@ static PyMethodDef module_methods[] = {
 
 #if PY_MAJOR_VERSION >= 3
 static struct PyModuleDef logicledef = {
-        PyModuleDef_HEAD_INIT,
-        "logicle_c",
-        NULL,
-        -1,
-        module_methods
+    PyModuleDef_HEAD_INIT,
+    "logicle_c",
+    NULL,
+    -1,
+    module_methods
 };
-#endif
 
-#if PY_MAJOR_VERSION >= 3
 PyMODINIT_FUNC PyInit_logicle_c(void) {
     PyObject *m = PyModule_Create(&logicledef);
-#else
-PyMODINIT_FUNC initlogicle_c(void) {
-    PyObject *m = Py_InitModule3("logicle_c", module_methods, NULL);
-#endif
-
     if (m == NULL) {
         return NULL;
     }
 
-    import_array();
+    import_array(); 
+    if (PyErr_Occurred()) {  
+        Py_DECREF(m);
+        return NULL;
+    }
 
-#if PY_MAJOR_VERSION >= 3
     return m;
-#endif
 }
+#else
+PyMODINIT_FUNC initlogicle_c(void) {
+    PyObject *m = Py_InitModule3("logicle_c", module_methods, NULL);
+    if (m == NULL) {
+        return;
+    }
+
+    import_array();  
+    if (PyErr_Occurred()) {
+        Py_DECREF(m);
+        return;
+    }
+
+    return;
+}
+#endif
+
