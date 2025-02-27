@@ -3,6 +3,7 @@ Tests for 'compensate' module
 """
 import unittest
 import numpy as np
+import os
 import pathlib
 from flowutils import compensate
 
@@ -190,3 +191,47 @@ class CompensationTestCase(unittest.TestCase):
         inv_comp_data = compensate.inverse_compensate(comp_data, spill)
 
         np.testing.assert_almost_equal(inv_comp_data, all_fluoro_data, 10)
+
+
+class SpectralCompensationTestCase(unittest.TestCase):
+    """
+        Tests for spectral compensation functions
+        """
+    def setUp(self):
+        spectral_data_dir = "tests/test_data/spectral_data"
+        self.spectral_event_data = np.load(os.path.join(spectral_data_dir, "spectral_raw_events.npy"))
+        self.spectral_fluoro_indices = np.load(os.path.join(spectral_data_dir, "spectral_fluoro_indices.npy"))
+        self.spectral_comp_matrix = np.load(os.path.join(spectral_data_dir, "spectral_comp_matrix.npy"))
+
+        # load truth data
+        spectral_data_truth_dir = "tests/test_data/spectral_data/truth"
+        self.spectral_event_data_comp = np.load(os.path.join(spectral_data_truth_dir, "spectral_raw_events_comp.npy"))
+
+    def test_compensate_spectral_ols(self):
+        comp_data = compensate.compensate_spectral_ols(
+            self.spectral_event_data,
+            self.spectral_comp_matrix,
+            fluoro_indices=self.spectral_fluoro_indices
+        )
+
+        self.assertIsInstance(comp_data, np.ndarray)
+
+        # the truth data was saved from earlier numpy 1.x version and float precision
+        # has changed slightly in numpy 2.x, so limiting decimal places slightly
+        np.testing.assert_array_almost_equal(comp_data, self.spectral_event_data_comp, 7)
+
+    def test_compensate_spectral_ols_no_indices(self):
+        fluoro_data_only = self.spectral_event_data[:, self.spectral_fluoro_indices]
+
+        comp_data = compensate.compensate_spectral_ols(
+            fluoro_data_only,
+            self.spectral_comp_matrix,
+            fluoro_indices=None
+        )
+
+        self.assertIsInstance(comp_data, np.ndarray)
+
+        # the truth data was saved from earlier numpy 1.x version and float precision
+        # has changed slightly in numpy 2.x, so limiting decimal places slightly
+        truth_fluoro_only = self.spectral_event_data_comp[:, self.spectral_fluoro_indices]
+        np.testing.assert_array_almost_equal(comp_data, truth_fluoro_only, 7)
