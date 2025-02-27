@@ -250,8 +250,7 @@ def parse_compensation_matrix(compensation, channel_labels, null_channels=None):
 
 def compensate(event_data, spill_matrix, fluoro_indices=None):
     """
-    Compensate NumPy event data 'npy' given spillover matrix 'spill'
-    and marker indices to compensate.
+    Compensate NumPy event data given spillover matrix.
 
     :param event_data: NumPy array of the event data
     :param spill_matrix: Compensation matrix as a NumPy array (without headers)
@@ -283,8 +282,7 @@ def compensate(event_data, spill_matrix, fluoro_indices=None):
 
 def inverse_compensate(event_data, spill_matrix, fluoro_indices=None):
     """
-    Inverse the compensation on NumPy event data 'npy' given spillover matrix 'spill'
-    and marker indices to "un-compensate".
+    Inverse the compensation on NumPy event data given spillover matrix.
 
     :param event_data: NumPy array of the event data
     :param spill_matrix: Compensation matrix as a NumPy array (without headers)
