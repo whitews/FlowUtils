@@ -311,3 +311,57 @@ def inverse_compensate(event_data, spill_matrix, fluoro_indices=None):
         data = inv_comp_data
 
     return data
+
+
+def compensate_spectral_ols(event_data, spill_matrix, fluoro_indices=None):
+    """
+    Compensate spectral event data given a spectral spillover matrix using the
+    ordinary least squares method (OLS). Unlike conventional flow cytometry
+    where one detector is used per fluorochrome, spectral flow cytometry utilizes
+    a larger number of detectors than fluorochromes, resulting in a spectral
+    matrix that is not square, with more columns than rows. The rows (M) in the
+    matrix correspond to the "true" fluorochromes (i.e. those detectors with
+    dedicated fluorochromes). This function assumes the order of the columns
+    in the matrix is such that the first M columns match the row order, and
+    the remaining columns are the extra detectors. Also note that because of
+    the overdetermined system, there is no inverse function for this method of
+    compensation.
+
+    :param event_data: NumPy array of the event data
+    :param spill_matrix: Compensation matrix as a NumPy array (without headers)
+    :param fluoro_indices: Optional list of indices of the fluorescent channels (only
+        these will be extracted & compensated). If None (default), all columns
+        will be compensated.
+
+    :return: NumPy array of compensated event data. If fluoro_indices were given,
+        the data is returned with the column order given, with the non-fluorescent
+        columns unmodified.
+    """
+    data = event_data.copy()
+    if fluoro_indices is not None:
+        comp_data = data[:, fluoro_indices]
+    else:
+        comp_data = data
+
+    # this does the actual compensation
+    # NumPy's least squares function returns a tuple of 4 items:
+    #     least-squares solution (what we want), residuals, rank, & s
+    # Refer to the NumPy docs for more details. We only want the solution,
+    # but it needs to be transposed back to our data orientation.
+    # So, we'll grab the first tuple item and transpose it to avoid storing
+    # unused variables.
+    comp_data = np.linalg.lstsq(spill_matrix.T, comp_data.T, rcond=-1)[0].T
+
+    # Re-insert compensated data columns, but this isn't as straight-forward
+    # as conventional compensation. For spectral compensation, only the true
+    # fluorescent channels need to be replaced.
+    if fluoro_indices is not None:
+        true_fluoro_indices = fluoro_indices[:spill_matrix.shape[0]]
+        data[:, true_fluoro_indices] = comp_data
+    else:
+        # if we were passed just the fluorescent data (including the non-true
+        # fluorescent channels), then only replace the indices given by the
+        # rows of the given spillover matrix.
+        data[:, :spill_matrix.shape[0]] = comp_data
+
+    return data
