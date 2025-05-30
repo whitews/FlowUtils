@@ -76,7 +76,7 @@ def _parse_multiline_matrix(matrix_text, fluoro_labels):
     # first, we must find a valid header line, then require that the matrix
     # follows on the next lines, ignoring any additional lines before or after
     # the header contains labels matching the PnN value(FCS text field)
-    # and may be tab or comma delimited
+    # and may be tab-delimited or comma-delimited
     # (spaces can't be delimiters b/c they are allowed in the PnN value)
     header = None
     header_line_index = None
@@ -183,12 +183,12 @@ def parse_compensation_matrix(compensation, channel_labels, null_channels=None):
         path, a pathlib Path object to a CSV or TSV file or a string of CSV
         text. If a string, both multi-line, traditional CSV, and the single
         line FCS spill formats are supported. If a NumPy array, we assume the
-        columns are in the same order as the channel labels
+        columns are in the same order as the channel labels.
     :param channel_labels: Channel labels from the FCS file's PnN fields, must be in
         the same order as they appear in the FCS file
     :param null_channels: Specify any empty channels that were collected and
         present in the channel_labels argument. These will be ignored when
-        validating and creating the compensation matrix
+        validating and creating the compensation matrix.
     :return: Compensation matrix as NumPy array where header contains the
         channel numbers (not indices!)
     """
@@ -254,13 +254,15 @@ def compensate(event_data, spill_matrix, fluoro_indices=None):
 
     :param event_data: NumPy array of the event data
     :param spill_matrix: Compensation matrix as a NumPy array (without headers)
-    :param fluoro_indices: Optional list of indices of the fluorescent channels (only
-        these will be extracted & compensated). If None (default), all columns
-        will be compensated.
+    :param fluoro_indices: List of fluorescent channel indices in given event_data
+        in the order found in the columns of the provided spill_matrix. Required
+        if the number of columns in event_data does not match the spill_matrix or
+        if the order of the columns does not match. If None (default), the
+        event_dataa columns are assumed to match the spill_matrix columns.
 
     :return: NumPy array of compensated event data. If fluoro_indices were given,
-        the data is returned with the column order given, with the non-fluorescent
-        columns unmodified.
+        the data is returned with the column order found in event_data, with the
+        non-fluorescent columns unmodified.
     """
     data = event_data.copy()
     if fluoro_indices is not None:
@@ -342,7 +344,7 @@ def compensate_spectral_ols(event_data, spill_matrix, fluoro_indices=None):
         comp_data = data
 
     # this does the actual compensation
-    # NumPy's least squares function returns a tuple of 4 items:
+    # The NumPy least squares function returns a tuple of 4 items:
     #     least-squares solution (what we want), residuals, rank, & s
     # Refer to the NumPy docs for more details. We only want the solution,
     # but it needs to be transposed back to our data orientation.

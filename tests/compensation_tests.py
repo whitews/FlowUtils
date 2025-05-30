@@ -195,8 +195,8 @@ class CompensationTestCase(unittest.TestCase):
 
 class SpectralCompensationTestCase(unittest.TestCase):
     """
-        Tests for spectral compensation functions
-        """
+    Tests for spectral compensation functions
+    """
     def setUp(self):
         spectral_data_dir = "tests/test_data/spectral_data"
         self.spectral_event_data = np.load(os.path.join(spectral_data_dir, "spectral_raw_events.npy"))
