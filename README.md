@@ -10,7 +10,7 @@
 [![Coverage](https://codecov.io/gh/whitews/FlowUtils/branch/master/graph/badge.svg)](https://codecov.io/gh/whitews/flowutils)
 [![Documentation Status](https://readthedocs.org/projects/flowutils/badge/?version=latest)](https://flowutils.readthedocs.io/en/latest/?badge=latest)
 
-FlowUtils is a Python package containing various utility functions related
+FlowUtils is a Python package containing utility functions related
 to flow cytometry analysis, primarily focused on compensation,
 transformation, and gating tasks commonly used within the flow community.
 
@@ -18,8 +18,8 @@ FlowUtils is part of a suite of Python libraries for analyzing flow
 cytometry data.  It was developed as an extension to the light-weight 
 [FlowIO library](https://github.com/whitews/FlowIO). FlowIO reads and 
 writes Flow Cytometry Standard (FCS) files, and has zero dependencies. 
-For higher level interaction with flow cytometry data, including 
-GatingML & FlowJo 10 support, see the related 
+For higher level interaction with flow cytometry data, including GatingML 
+& FlowJo 10 support, see the related 
 [FlowKit project](https://github.com/whitews/FlowKit).
 
 ## Installation
