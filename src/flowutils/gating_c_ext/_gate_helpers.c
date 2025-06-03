@@ -1,4 +1,5 @@
 #include <Python.h>
+#define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION // to avoid a warning
 #include <numpy/arrayobject.h>
 #include "gate_helpers.h"
 
@@ -12,7 +13,11 @@ static PyObject *wrap_calc_wind_count(PyObject *self, PyObject *args) {
         return NULL;
     }
 
-    PyObject *poly_vert_array = PyArray_FROM_OTF(poly_vertices, NPY_DOUBLE, NPY_IN_ARRAY);
+    PyArrayObject *poly_vert_array = (PyArrayObject *) PyArray_FROM_OTF(poly_vertices, NPY_DOUBLE, NPY_ARRAY_IN_ARRAY);
+    if (!poly_vert_array) {
+        PyErr_SetString(PyExc_RuntimeError, "Failed to convert poly_vertices to NumPy array");
+        return NULL;
+    }
     double *poly_vertices_c = (double *) PyArray_DATA(poly_vert_array);
 
     // now we can call our function!
@@ -34,10 +39,18 @@ static PyObject *wrap_points_in_polygon(PyObject *self, PyObject *args) {
         return NULL;
     }
 
-    PyObject *poly_vert_array = PyArray_FROM_OTF(poly_vertices, NPY_DOUBLE, NPY_IN_ARRAY);
+    PyArrayObject *poly_vert_array = (PyArrayObject *) PyArray_FROM_OTF(poly_vertices, NPY_DOUBLE, NPY_ARRAY_IN_ARRAY);
+    if (!poly_vert_array) {
+        PyErr_SetString(PyExc_RuntimeError, "Failed to convert poly_vertices to NumPy array");
+        return NULL;
+    }
     double *poly_vertices_c = (double *) PyArray_DATA(poly_vert_array);
 
-    PyObject *points_array = PyArray_FROM_OTF(points, NPY_DOUBLE, NPY_IN_ARRAY);
+    PyArrayObject *points_array = (PyArrayObject *) PyArray_FROM_OTF(points, NPY_DOUBLE, NPY_ARRAY_IN_ARRAY);
+    if (!points_array) {
+        PyErr_SetString(PyExc_RuntimeError, "Failed to convert points to NumPy array");
+        return NULL;
+    }
     double *points_c = (double *) PyArray_DATA(points_array);
 
     // now we can call our function!
@@ -67,28 +80,40 @@ static PyMethodDef module_methods[] = {
 
 #if PY_MAJOR_VERSION >= 3
 static struct PyModuleDef gatingdef = {
-        PyModuleDef_HEAD_INIT,
-        "gating_c",
-        NULL,
-        -1,
-        module_methods
+    PyModuleDef_HEAD_INIT, 
+    "gating_c", 
+    NULL, 
+    -1, 
+    module_methods
 };
-#endif
 
-#if PY_MAJOR_VERSION >= 3
 PyMODINIT_FUNC PyInit_gating_c(void) {
     PyObject *m = PyModule_Create(&gatingdef);
-#else
-PyMODINIT_FUNC initgating_c(void) {
-    PyObject *m = Py_InitModule3("gating_c", module_methods, NULL);
-#endif
-
     if (m == NULL) {
         return NULL;
     }
-    import_array();
 
-#if PY_MAJOR_VERSION >= 3
+    import_array();
+    if (PyErr_Occurred()) {
+        Py_DECREF(m);
+        return NULL;
+    }
+
     return m;
-#endif
 }
+#else
+PyMODINIT_FUNC initgating_c(void) {
+    PyObject *m = Py_InitModule3("gating_c", module_methods, NULL);
+    if (m == NULL) {
+        return;
+    }
+
+    import_array();
+    if (PyErr_Occurred()) {
+        Py_DECREF(m);
+        return;
+    }
+
+    return;
+}
+#endif
