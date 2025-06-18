@@ -17,7 +17,7 @@ transformation, and gating tasks commonly used within the flow community.
 FlowUtils is part of a suite of Python libraries for analyzing flow 
 cytometry data.  It was developed as an extension to the light-weight 
 [FlowIO library](https://github.com/whitews/FlowIO). FlowIO reads and 
-writes Flow Cytometry Standard (FCS) files, and has zero dependencies. 
+writes Flow Cytometry Standard (FCS) files, and has minimal dependencies. 
 For higher level interaction with flow cytometry data, including GatingML 
 & FlowJo 10 support, see the related 
 [FlowKit project](https://github.com/whitews/FlowKit).
