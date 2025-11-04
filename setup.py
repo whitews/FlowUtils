@@ -15,7 +15,16 @@ if __version__ is None:
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
-
+# NOTE ON C EXTENSIONS
+# On MacOS, clang 14 and later introduced changes to
+# Fused Multiply-Add (FMA). Prior to version 14, clang
+# was less likely to use FMA. clang 14 began using FMA by
+# default, resulting in numerical differences in some
+# expressions. Specifically, the is_left() function in
+# gate_helpers.c was affected and resulted in failed tests.
+# To enforce consistency across platforms the compile
+# flag '-ffp-contract=off' was added to disable FMA.
+# This fixed the discrepancies on Mac OS.
 logicle_extension = Extension(
     'flowutils.logicle_c',
     sources=[
@@ -23,7 +32,7 @@ logicle_extension = Extension(
         'src/flowutils/logicle_c_ext/logicle.c'
     ],
     include_dirs=[np.get_include(), 'src/flowutils/logicle_c_ext'],
-    extra_compile_args=['-std=c99', '-DNPY_NO_DEPRECATED_API=NPY_1_7_API_VERSION']
+    extra_compile_args=['-std=c99', '-ffp-contract=off']
 )
 
 gating_extension = Extension(
@@ -33,7 +42,7 @@ gating_extension = Extension(
         'src/flowutils/gating_c_ext/gate_helpers.c'
     ],
     include_dirs=[np.get_include(), 'src/flowutils/gating_c_ext'],
-    extra_compile_args=['-std=c99', '-DNPY_NO_DEPRECATED_API=NPY_1_7_API_VERSION']
+    extra_compile_args=['-std=c99',  '-ffp-contract=off']
 )
 
 setup(
