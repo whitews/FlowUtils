@@ -4,7 +4,7 @@ Tests for 'gating' module
 import unittest
 import numpy as np
 
-from flowutils import gating, gating_py
+from flowutils import gating
 
 
 class GatingTestCase(unittest.TestCase):
@@ -28,34 +28,6 @@ class GatingTestCase(unittest.TestCase):
         )
 
         np.testing.assert_array_equal(truth, result)
-
-    @staticmethod
-    def test_points_in_polygon1_py():
-        poly_vertices = np.array(
-            [
-                [5., 5.],
-                [500., 5.],
-                [500., 500.]
-            ]
-        )
-
-        npy_file_path = "tests/test_data/poly1/poly1_events.npy"
-        event_data = np.load(npy_file_path)
-
-        # this file was exported from linux to evaluate if
-        # the discrepancies originate from differences in
-        # reading / parsing FCS event data.
-        npy_linux_file_path = "tests/test_data/poly1/poly1_events_linux.npy"
-        event_data_linux = np.load(npy_linux_file_path)
-
-        truth_path = 'tests/test_data/poly1/poly1_truth.npy'
-        truth = np.load(truth_path)
-
-        result = gating_py.points_in_polygon(poly_vertices, event_data)
-        result_linux = gating_py.points_in_polygon(poly_vertices, event_data_linux)
-
-        np.testing.assert_array_equal(truth, result)
-        np.testing.assert_array_equal(truth, result_linux)
 
     @staticmethod
     def test_points_in_polygon1():
