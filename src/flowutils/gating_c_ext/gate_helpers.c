@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <stdio.h>
 #include "gate_helpers.h"
 
 double point_is_left(
@@ -9,22 +10,22 @@ double point_is_left(
         double test_point_x,
         double test_point_y
 ) {
-    double is_left = (point_b_x - point_a_x) * (test_point_y - point_a_y) -
-              (test_point_x - point_a_x) * (point_b_y - point_a_y);
+    double is_left = ((point_b_x - point_a_x) * (test_point_y - point_a_y)) -
+              ((test_point_x - point_a_x) * (point_b_y - point_a_y));
     return is_left;
 }
 
 int calc_wind_count(double point_x, double point_y, int vert_count, double *poly_vertices) {
-	int wind_count = 0;
-	double vert_a_x;
-	double vert_a_y;
-	double vert_b_x;
-	double vert_b_y;
-	double is_left;
+    int wind_count = 0;
+    double vert_a_x;
+    double vert_a_y;
+    double vert_b_x;
+    double vert_b_y;
+    double is_left;
 
     // loop through all edges of the polygon
     for (int i=0; i<vert_count; i++) {
-        //edge from poly_vertices[i] to poly_vertices[i+1]
+        // edge from poly_vertices[i] to poly_vertices[i+1]
         vert_a_x = poly_vertices[(i * 2) + 0];
         vert_a_y = poly_vertices[(i * 2) + 1];
 
@@ -40,6 +41,7 @@ int calc_wind_count(double point_x, double point_y, int vert_count, double *poly
             if (point_y < vert_b_y) {
                 // point crosses & edge travels upward
                 is_left = point_is_left(vert_a_x, vert_a_y, vert_b_x, vert_b_y, point_x, point_y);
+
                 if (is_left > 0) {
                     // point is left of edge
                     wind_count += 1;  // valid 'up' intersection
@@ -77,6 +79,15 @@ int * points_in_polygon(int *wind_counts, double *poly_vertices, int vert_count,
     available here:
 
         https://web.archive.org/web/20210504233957/http://geomalgorithms.com/a03-_inclusion.html
+
+    Additional print references from that original article:
+
+        - Wm. Randolph Franklin, "PNPOLY  - Point Inclusion in Polygon Test" Web Page (2000)
+        - Eric Haines, "Point in Polygon Strategies" in Graphics Gems IV (1994)
+        - Tomas Moller & Eric Haines, "Ray/Polygon Intersection" in Real-Time Rendering (3rd Edition) (2008)
+        - Joseph O'Rourke, "Point in  Polygon" in Computational Geometry in C (2nd Edition) (1998)
+        - John M. Snyder & Alan H. Barr, "Ray Tracing Complex  Models Containing Surface Tessellations",
+          Computer Graphics 21(4), 119-126 (1987)  [also in the Proceedings of SIGGRAPH 1987]
 
     :param poly_vertices: Polygon vertices (array of 2-D points)
     :param vert_count: Number of vertices in polygon

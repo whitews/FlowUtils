@@ -1,5 +1,4 @@
 #include <Python.h>
-#define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION // to avoid a warning
 #include <numpy/arrayobject.h>
 #include "logicle.h"
 
