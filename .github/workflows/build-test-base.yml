@@ -8,7 +8,7 @@ jobs:
     strategy:
       matrix:
         # 3.13.5 specified due to Windows python linkage issue
-        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13.5"]
+        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13"]
         platform: [ubuntu-latest, macos-latest, windows-latest]
 
     runs-on: ${{matrix.platform}}
