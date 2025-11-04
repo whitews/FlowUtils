@@ -37,7 +37,7 @@ def calc_wind_count(point_x, point_y, vert_count, poly_vertices):
             if point_y < vert_b_y:
                 # point crosses & edge travels upward
                 is_left = point_is_left(vert_a_x, vert_a_y, vert_b_x, vert_b_y, point_x, point_y)
-                print("if is_left: %.14f" % is_left)
+                # print("if is_left: %.14f" % is_left)
 
                 if is_left > 0:
                     # point is left of edge
@@ -46,13 +46,13 @@ def calc_wind_count(point_x, point_y, vert_count, poly_vertices):
             if vert_b_y <= point_y:
                 # point crosses & edge travels downward
                 is_left = point_is_left(vert_a_x, vert_a_y, vert_b_x, vert_b_y, point_x, point_y)
-                print("vert_a_x: %.14f" % vert_a_x)
-                print("vert_a_y: %.14f" % vert_a_y)
-                print("vert_b_x: %.14f" % vert_b_x)
-                print("vert_b_y: %.14f" % vert_b_y)
-                print("point_x: %.14f" % point_x)
-                print("point_y: %.14f" % point_y)
-                print("else is_left: %.14f" % is_left)
+                # print("vert_a_x: %.14f" % vert_a_x)
+                # print("vert_a_y: %.14f" % vert_a_y)
+                # print("vert_b_x: %.14f" % vert_b_x)
+                # print("vert_b_y: %.14f" % vert_b_y)
+                # print("point_x: %.14f" % point_x)
+                # print("point_y: %.14f" % point_y)
+                # print("else is_left: %.14f" % is_left)
 
                 if is_left < 0:
                     # point is right of edge
