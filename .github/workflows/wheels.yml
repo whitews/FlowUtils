@@ -4,11 +4,23 @@ on: [workflow_dispatch]
 
 jobs:
   build_wheels:
-    name: Build wheels on ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
+    name: Build wheels for ${{ matrix.os }}
+    runs-on: ${{ matrix.runs-on }}
     strategy:
       matrix:
-        os: [ubuntu-22.04, windows-2022, macos-12]
+        include:
+          - os: linux-intel
+            runs-on: ubuntu-latest
+          - os: linux-arm
+            runs-on: ubuntu-24.04-arm
+          - os: windows-intel
+            runs-on: windows-latest
+          - os: macos-intel
+            # macos-13 was the last x86_64 runner
+            runs-on: macos-13
+          - os: macos-arm
+            # macos-14+ (including latest) are ARM64 runners
+            runs-on: macos-latest
 
     steps:
       - name: Checkout
@@ -22,13 +34,13 @@ jobs:
           python-version: 3.11
 
       - name: Install cibuildwheel
-        run: python -m pip install cibuildwheel==2.15.0
+        run: python -m pip install cibuildwheel==2.22.0
 
       - name: Build wheels
         env:
           CIBW_SKIP: pp* *-musllinux_* *-manylinux_i686 *-win32  # skip PyPy, musllinux, 32-bit Linux & win32 builds
-          CIBW_ARCHS_MACOS: x86_64 arm64
-          CIBW_BUILD: cp37-* cp38-* cp39-* cp310-* cp311-* cp312-*
+          CIBW_ARCHS_MACOS: auto
+          CIBW_BUILD: cp39-* cp310-* cp311-* cp312-* cp313-*
         run: python -m cibuildwheel --output-dir wheelhouse
 
       - name: Store artifacts
