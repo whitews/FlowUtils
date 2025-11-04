@@ -61,6 +61,7 @@ setup(
     ext_modules=[logicle_extension, gating_extension],
     install_requires=['numpy>=2.0,<3.0'],
     classifiers=[
+        'Programming Language :: Python :: 3.14',
         'Programming Language :: Python :: 3.13',
         'Programming Language :: Python :: 3.12',
         'Programming Language :: Python :: 3.11',
