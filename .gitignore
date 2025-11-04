@@ -1,6 +1,9 @@
 # User-specific stuff:
 .idea
 
+# OS-specific files
+.DS_Store
+
 # Compiled Python & C extensions
 *.pyc
 *.so
