@@ -80,6 +80,15 @@ int * points_in_polygon(int *wind_counts, double *poly_vertices, int vert_count,
 
         https://web.archive.org/web/20210504233957/http://geomalgorithms.com/a03-_inclusion.html
 
+    Additional print references from that original article:
+
+        - Wm. Randolph Franklin, "PNPOLY  - Point Inclusion in Polygon Test" Web Page (2000)
+        - Eric Haines, "Point in Polygon Strategies" in Graphics Gems IV (1994)
+        - Tomas Moller & Eric Haines, "Ray/Polygon Intersection" in Real-Time Rendering (3rd Edition) (2008)
+        - Joseph O'Rourke, "Point in  Polygon" in Computational Geometry in C (2nd Edition) (1998)
+        - John M. Snyder & Alan H. Barr, "Ray Tracing Complex  Models Containing Surface Tessellations",
+          Computer Graphics 21(4), 119-126 (1987)  [also in the Proceedings of SIGGRAPH 1987]
+
     :param poly_vertices: Polygon vertices (array of 2-D points)
     :param vert_count: Number of vertices in polygon
     :param points: Points to test for polygon inclusion
