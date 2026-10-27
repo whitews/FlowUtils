@@ -39,18 +39,18 @@ class GatingTestCase(unittest.TestCase):
             ]
         )
 
-        # npy_file_path = "tests/test_data/poly1/poly1_events.npy"
-        # event_data = np.load(npy_file_path)
+        npy_file_path = "tests/test_data/poly1/poly1_events.npy"
+        event_data = np.load(npy_file_path)
 
         # These are the 3 "trouble" events incorrectly marked as outside gate
         # Keep these but comment out to revisit in case of future issues.
-        event_data = np.array(
-            [
-                [ 5.88208437619687,  5.88208437619687],
-                [ 8.659643233600654,  8.659643233600654],
-                [13.455698580999508, 13.455698580999508]
-            ]
-        )
+        # event_data = np.array(
+        #     [
+        #         [ 5.88208437619687,  5.88208437619687],
+        #         [ 8.659643233600654,  8.659643233600654],
+        #         [13.455698580999508, 13.455698580999508]
+        #     ]
+        # )
 
         # this file was exported from linux to evaluate if
         # the discrepancies originate from differences in
@@ -58,10 +58,11 @@ class GatingTestCase(unittest.TestCase):
         # npy_linux_file_path = "tests/test_data/poly1/poly1_events_linux.npy"
         # event_data_linux = np.load(npy_linux_file_path)
 
-        # truth_path = 'tests/test_data/poly1/poly1_truth.npy'
-        # truth = np.load(truth_path)
+        truth_path = 'tests/test_data/poly1/poly1_truth.npy'
+        truth = np.load(truth_path)
 
-        truth = [True, True, True]
+        # for checking the 3 "trouble" events
+        # truth = [True, True, True]
 
         result = gating.points_in_polygon(poly_vertices, event_data)
         # result_linux = gating.points_in_polygon(poly_vertices, event_data_linux)
