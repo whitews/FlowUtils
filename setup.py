@@ -41,7 +41,7 @@ if sys.platform == "win32":
     core_math_compile_args = [
         "/O2",
         "/fp:precise",
-        "/FIsrc/flowutils/core_math_ext/msvc_compat.h"
+        "/FIsmsvc_compat.h"
     ]
     libs = []
 else:
@@ -57,7 +57,7 @@ exp10_extension = Extension(
         "src/flowutils/core_math_ext/_exp10.c",     # Your C-API wrapper
         "src/flowutils/core_math_ext/exp10.c"       # The pristine CORE-MATH source file
     ],
-    include_dirs=[np.get_include(), 'src/core_math_ext'],
+    include_dirs=[np.get_include(), 'src/flowutils/core_math_ext'],
     extra_compile_args=core_math_compile_args,
     libraries=libs
 )
