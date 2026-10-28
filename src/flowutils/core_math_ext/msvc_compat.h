@@ -8,6 +8,10 @@
     #define __attribute__(x)
     #define inline __inline
 
+    // FIX: Intercept the specific GCC assignment asm blocks used in exp10.c
+    // This safely copies the source variable into the destination variable on Windows.
+    #define asm(template, output, input) (output) = (input)
+
     // Handles specific int sizes if missing
     typedef __int64 i64;
     typedef unsigned __int64 u64;
