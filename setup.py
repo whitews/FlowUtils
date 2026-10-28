@@ -3,6 +3,7 @@ Setup script for the FlowUtils package
 """
 from setuptools import setup, Extension
 from setuptools.command.build_ext import build_ext as _build_ext
+import shutil
 import sys
 import numpy as np  # NumPy is needed to build C extensions
 
@@ -39,7 +40,7 @@ if sys.platform == "win32":
     # NOTE: FlowUtils must use clang-cl to correctly compile the exp10 extension
     # /O2 optimizes speed safely
     # Use strict rounding
-    core_math_compile_args = ["-O2", "-frounding-math"]
+    core_math_compile_args = ["/O2", "/clang:-frounding-math"]
     libs = []
 else:
     # GCC/Clang Flags: Disable FMA explicitly to handle the macOS Clang 14+ drift
@@ -51,13 +52,17 @@ else:
 class CustomBuildExt(_build_ext):
     def build_extensions(self):
         if sys.platform == "win32":
-            # Reassign compiler executables to use Clang-cl instead of cl.exe
-            if hasattr(self.compiler, 'cc'):
-                self.compiler.cc = "clang-cl.exe"
-            if hasattr(self.compiler, 'linker'):
-                self.compiler.linker = "lld-link.exe"
-            if hasattr(self.compiler, 'lib'):
-                self.compiler.lib = "llvm-lib.exe"
+            compiler = self.compiler
+            compiler.initialize()  # Loads the MSVC/Windows SDK environment first.
+
+            clang_cl = shutil.which("clang-cl")
+            if clang_cl is None:
+                raise RuntimeError(
+                    "clang-cl was not found on PATH; install LLVM or add it to PATH"
+                )
+
+            compiler.cc = clang_cl
+
         super().build_extensions()
 
 exp10_extension = Extension(
