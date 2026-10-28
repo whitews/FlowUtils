@@ -36,11 +36,11 @@ if sys.platform == "win32":
     base_compile_args = ["/O2"]
 
     # /O2 optimizes speed safely
-    # /fp:precise guarantees IEEE precision
+    # /fp:strict guarantees IEEE precision
     # /FI forces MSVC to include our compatibility header before reading exp10.c
     core_math_compile_args = [
         "/O2",
-        "/fp:precise",
+        "/fp:strict",
         "/FImsvc_compat.h"
     ]
     libs = []
