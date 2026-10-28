@@ -33,12 +33,12 @@ with open("README.md", "r") as fh:
 
 # Define cross-platform compiler architectures
 if sys.platform == "win32":
-    base_compile_args = ["/O2"]
+    base_compile_args = ["-O2"]
 
     # NOTE: FlowUtils must use clang-cl to correctly compile the exp10 extension
     # /O2 optimizes speed safely
     # Use strict rounding
-    core_math_compile_args = ["/O2", "-frounding-math"]
+    core_math_compile_args = ["-O2", "-frounding-math"]
     libs = []
 else:
     # GCC/Clang Flags: Disable FMA explicitly to handle the macOS Clang 14+ drift

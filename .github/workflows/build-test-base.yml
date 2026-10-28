@@ -26,6 +26,7 @@ jobs:
           # Inject clang-cl compiler directives into the GitHub runner global process environment
           echo "CC=clang-cl" >> $GITHUB_ENV
           echo "CXX=clang-cl" >> $GITHUB_ENV
+          echo "DISTUTILS_USE_SDK=1" >> $GITHUB_ENV
 
       - name: Setup Python
         uses: actions/setup-python@v5
