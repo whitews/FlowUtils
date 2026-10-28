@@ -19,6 +19,14 @@ jobs:
         with:
           ref: ${{ github.ref_name }}
 
+      - name: Configure Clang Compiler for Windows
+        if: matrix.os == 'windows-latest'
+        shell: bash
+        run: |
+          # Inject clang-cl compiler directives into the GitHub runner global process environment
+          echo "CC=clang-cl" >> $GITHUB_ENV
+          echo "CXX=clang-cl" >> $GITHUB_ENV
+
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
