@@ -1,12 +1,13 @@
 import sys
 import unittest
+import tests
 
 if __name__ == '__main__':
-    # Discover and run all tests in the 'tests' directory
-    suite = unittest.defaultTestLoader.discover('tests')
+    # Load the tests directly from the imported tests package
+    suite = unittest.defaultTestLoader.loadTestsFromModule(tests)
     runner = unittest.TextTestRunner()
     result = runner.run(suite)
 
-    # Force a non-zero exit code if tests failed or raised errors
+    # Explicitly exit with 1 if any tests failed or errored
     if not result.wasSuccessful():
         sys.exit(1)
