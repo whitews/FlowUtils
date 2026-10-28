@@ -9,6 +9,7 @@ except ImportError:
         "Please re-install FlowUtils or build from source."
     )
 
+__all__ = ['exp10']
 
 def exp10(array: np.ndarray) -> np.ndarray:
     """
