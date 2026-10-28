@@ -41,7 +41,7 @@ if sys.platform == "win32":
     core_math_compile_args = [
         "/O2",
         "/fp:precise",
-        "/FIsmsvc_compat.h"
+        "/FImsvc_compat.h"
     ]
     libs = []
 else:
