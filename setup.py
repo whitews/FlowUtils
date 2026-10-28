@@ -52,9 +52,12 @@ class CustomBuildExt(_build_ext):
     def build_extensions(self):
         if sys.platform == "win32":
             # Reassign compiler executables to use Clang-cl instead of cl.exe
-            self.compiler.set_executable("compiler_so", "clang-cl")
-            self.compiler.set_executable("compiler_cxx", "clang-cl")
-            self.compiler.set_executable("linker_so", "lld-link")
+            if hasattr(self.compiler, 'cc'):
+                self.compiler.cc = "clang-cl.exe"
+            if hasattr(self.compiler, 'linker'):
+                self.compiler.linker = "lld-link.exe"
+            if hasattr(self.compiler, 'lib'):
+                self.compiler.lib = "llvm-lib.exe"
         super().build_extensions()
 
 exp10_extension = Extension(
