@@ -2,6 +2,7 @@
 Setup script for the FlowUtils package
 """
 from setuptools import setup, Extension
+from setuptools.command.build_ext import build_ext as _build_ext
 import sys
 import numpy as np  # NumPy is needed to build C extensions
 
@@ -46,6 +47,15 @@ else:
     # Add strict rounding tracking for CORE-MATH
     core_math_compile_args = ["-std=gnu99", "-O3", "-frounding-math"]
     libs = ["m"]  # Link math library on Unix/Linux/macOS
+
+class CustomBuildExt(_build_ext):
+    def build_extensions(self):
+        if sys.platform == "win32":
+            # Reassign compiler executables to use Clang-cl instead of cl.exe
+            self.compiler.set_executable("compiler_so", "clang-cl")
+            self.compiler.set_executable("compiler_cxx", "clang-cl")
+            self.compiler.set_executable("linker_so", "lld-link")
+        super().build_extensions()
 
 exp10_extension = Extension(
     "flowutils.exp10_c",
@@ -94,6 +104,9 @@ setup(
     license='BSD',
     url="https://github.com/whitews/flowutils",
     ext_modules=[exp10_extension, logicle_extension, gating_extension],
+    cmdclass={
+        'build_ext': CustomBuildExt,
+    },
     install_requires=['numpy>=2.0,<3.0'],
     classifiers=[
         'Programming Language :: Python :: 3.14',
