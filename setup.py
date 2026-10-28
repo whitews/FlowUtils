@@ -2,6 +2,7 @@
 Setup script for the FlowUtils package
 """
 from setuptools import setup, Extension
+import sys
 import numpy as np  # NumPy is needed to build C extensions
 
 # read in version string
@@ -15,8 +16,9 @@ if __version__ is None:
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
-# NOTE ON C EXTENSIONS
-# On MacOS, clang 14 and later introduced changes to
+# NOTES ON C EXTENSIONS:
+#
+# On macOS, clang 14 and later introduced changes to
 # Fused Multiply-Add (FMA). Prior to version 14, clang
 # was less likely to use FMA. clang 14 began using FMA by
 # default, resulting in numerical differences in some
@@ -24,7 +26,35 @@ with open("README.md", "r") as fh:
 # gate_helpers.c was affected and resulted in failed tests.
 # To enforce consistency across platforms the compile
 # flag '-ffp-contract=off' was added to disable FMA.
-# This fixed the discrepancies on Mac OS.
+# This fixed the discrepancies on macOS.
+#
+# The exp10 extension was added to address 1-ULP inconsistencies
+# in 10^x calculations needed for FCS pre-processing in FlowIO.
+
+# Define cross-platform compiler architectures
+if sys.platform == "win32":
+    # MSVC Flags: /O2 optimizes speed safely, /fp:precise guarantees IEEE precision
+    base_compile_args = ["/O2"]
+    core_math_compile_args = ["/O2", "/fp:precise"]
+    libs = []
+else:
+    # GCC/Clang Flags: Disable FMA explicitly to handle the macOS Clang 14+ drift
+    base_compile_args = ["-std=gnu99", "-ffp-contract=off"]
+    # Add strict rounding tracking for CORE-MATH
+    core_math_compile_args = ["-std=gnu99", "-O3", "-frounding-math"]
+    libs = ["m"]  # Link math library on Unix/Linux/macOS
+
+exp10_extension = Extension(
+    "flowutils.exp10_c",
+    sources=[
+        "src/flowutils/core_math_ext/_exp10.c",     # Your C-API wrapper
+        "src/flowutils/core_math_ext/exp10.c"       # The pristine CORE-MATH source file
+    ],
+    include_dirs=[np.get_include(), 'src/core_math_ext'],
+    extra_compile_args=core_math_compile_args,
+    libraries=libs
+)
+
 logicle_extension = Extension(
     'flowutils.logicle_c',
     sources=[
@@ -32,7 +62,8 @@ logicle_extension = Extension(
         'src/flowutils/logicle_c_ext/logicle.c'
     ],
     include_dirs=[np.get_include(), 'src/flowutils/logicle_c_ext'],
-    extra_compile_args=['-std=c99', '-ffp-contract=off']
+    extra_compile_args=base_compile_args,
+    libraries=libs
 )
 
 gating_extension = Extension(
@@ -42,7 +73,8 @@ gating_extension = Extension(
         'src/flowutils/gating_c_ext/gate_helpers.c'
     ],
     include_dirs=[np.get_include(), 'src/flowutils/gating_c_ext'],
-    extra_compile_args=['-std=c99',  '-ffp-contract=off']
+    extra_compile_args=base_compile_args,
+    libraries=libs
 )
 
 setup(
@@ -58,7 +90,7 @@ setup(
     author_email='whitews@gmail.com',
     license='BSD',
     url="https://github.com/whitews/flowutils",
-    ext_modules=[logicle_extension, gating_extension],
+    ext_modules=[exp10_extension, logicle_extension, gating_extension],
     install_requires=['numpy>=2.0,<3.0'],
     classifiers=[
         'Programming Language :: Python :: 3.14',
