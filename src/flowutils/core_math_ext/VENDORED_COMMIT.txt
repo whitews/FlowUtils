@@ -1,0 +1,5 @@
+Source: https://gitlab.inria.fr/core-math/core-math
+Commit: 0ad8451c76003f617b1ad2b0bdfe10822619bdc3
+Source path: src/binary64/exp10/exp10.c
+License: MIT
+Vendored on: 2026-10-26
