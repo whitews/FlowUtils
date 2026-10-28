@@ -32,9 +32,13 @@ jobs:
           pip install .
 
       - name: Run tests with coverage
-        run: |
-          coverage run --source flowutils run_tests.py
-          coverage xml
+        # WARNING: Do NOT add subsequent commands on new lines here.
+        #          Multi-line commands can mask non-zero exit codes.
+        run: coverage run --source flowutils run_tests.py
+
+      - name: Generate coverage report
+        if: success() || failure()
+        run: coverage xml
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4
