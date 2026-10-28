@@ -33,9 +33,16 @@ with open("README.md", "r") as fh:
 
 # Define cross-platform compiler architectures
 if sys.platform == "win32":
-    # MSVC Flags: /O2 optimizes speed safely, /fp:precise guarantees IEEE precision
     base_compile_args = ["/O2"]
-    core_math_compile_args = ["/O2", "/fp:precise"]
+
+    # /O2 optimizes speed safely
+    # /fp:precise guarantees IEEE precision
+    # /FI forces MSVC to include our compatibility header before reading exp10.c
+    core_math_compile_args = [
+        "/O2",
+        "/fp:precise",
+        "/FIsrc/flowutils/core_math_ext/msvc_compat.h"
+    ]
     libs = []
 else:
     # GCC/Clang Flags: Disable FMA explicitly to handle the macOS Clang 14+ drift
