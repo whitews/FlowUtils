@@ -39,7 +39,7 @@ if sys.platform == "win32":
     # /fp:strict guarantees IEEE precision
     # /FI forces MSVC to include our compatibility header before reading exp10.c
     core_math_compile_args = [
-        "/O1",
+        "/Od",
         "/fp:strict",
         "/FImsvc_compat.h"
     ]
