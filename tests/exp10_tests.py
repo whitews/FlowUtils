@@ -57,6 +57,20 @@ class CoreMathExp10TestCase(unittest.TestCase):
         matrix_out = exp10(matrix_in)
         self.assertEqual(matrix_out.shape, matrix_in.shape)
 
+    def test_scalar_bit_patterns_simple_powers_and_signed_zero(self):
+        cases = [
+            # Exact/simple powers and signed zero.
+            (0.0, "3ff0000000000000"),
+            (-0.0, "3ff0000000000000"),
+            (1.0, "4024000000000000"),
+            (2.0, "4059000000000000"),
+            (-1.0, "3fb999999999999a")
+        ]
+
+        for value, expected_hex in cases:
+            with self.subTest(value=value):
+                self.assert_bits(exp10(value), expected_hex)
+
     def test_special_values(self):
         self.assertEqual(exp10(float("inf")), float("inf"))
         self.assertEqual(exp10(float("-inf")), 0.0)
