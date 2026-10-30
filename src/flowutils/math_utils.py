@@ -1,3 +1,4 @@
+from typing import overload
 import numpy as np
 
 try:
@@ -11,16 +12,35 @@ except ImportError:
 
 __all__ = ['exp10']
 
-def exp10(array: np.ndarray) -> np.ndarray:
+@overload
+def exp10(x: np.ndarray) -> np.ndarray: ...
+
+@overload
+def exp10(x: float) -> float: ...
+
+@overload
+def exp10(x: int) -> float: ...
+
+def exp10(x):
     """
     Correctly rounded 10^x exponential transformation using CORE-MATH.
 
     Guarantees cross-platform, deterministic, bit-perfect results
     across Linux, macOS, and Windows down to 0 ULP.
 
-    :param array: np.ndarray A numeric array (typically float64) of flow cytometry events
-    :return: np.ndarray The transformed array matching the dimensions of the input.
+    Parameters
+    ----------
+    x : ndarray, float, or int
+        The exponent value(s) to process. Typically, a float64 array of flow
+        cytometry events or a single numeric scalar. Regular Python lists are
+        not accepted.
+
+    Returns
+    -------
+    ndarray or float
+        The transformed result. Returns a ndarray matching the dimensions of
+        the input, or native Python float if given an int or float.
     """
 
     # Map Python API call to the CORE-MATH C function
-    return exp10_c.exp10_c(array)
+    return exp10_c.exp10_c(x)
