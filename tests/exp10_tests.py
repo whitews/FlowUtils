@@ -1,3 +1,4 @@
+import math
 import struct
 import unittest
 import numpy as np
@@ -55,6 +56,11 @@ class CoreMathExp10TestCase(unittest.TestCase):
         matrix_in = np.array([[1.13671875], [0.3125]], dtype=np.float64)
         matrix_out = exp10(matrix_in)
         self.assertEqual(matrix_out.shape, matrix_in.shape)
+
+    def test_special_values(self):
+        self.assertEqual(exp10(float("inf")), float("inf"))
+        self.assertEqual(exp10(float("-inf")), 0.0)
+        self.assertTrue(math.isnan(exp10(float("nan"))))
 
     def test_mathematical_edge_cases(self):
         """Verifies mathematical thresholds, limits, and floating point corner-cases."""
