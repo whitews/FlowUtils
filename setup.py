@@ -35,7 +35,7 @@ with open("README.md", "r") as fh:
 
 # Define cross-platform compiler architectures
 if sys.platform == "win32":
-    base_compile_args = ["-O2"]
+    base_compile_args = ["/O2", "/clang:-ffp-contract=off"]
 
     # NOTE: FlowUtils must use clang-cl to correctly compile the exp10 extension
     # Use strict rounding
