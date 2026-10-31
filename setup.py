@@ -49,7 +49,12 @@ else:
     # GCC/Clang Flags: Disable FMA explicitly to handle the macOS Clang 14+ drift
     base_compile_args = ["-std=gnu99", "-ffp-contract=off"]
     # Add strict rounding tracking for CORE-MATH
-    core_math_compile_args = ["-std=gnu99", "-O3", "-frounding-math"]
+    core_math_compile_args = [
+        "-std=gnu99",
+        "-O3",
+        "-frounding-math",
+        "-ffp-contract=off"
+    ]
     libs = ["m"]  # Link math library on Unix/Linux/macOS
 
 class CustomBuildExt(_build_ext):
