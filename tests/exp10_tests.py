@@ -71,27 +71,26 @@ class CoreMathExp10TestCase(unittest.TestCase):
             with self.subTest(value=value):
                 self.assert_bits(exp10(value), expected_hex)
 
+    def test_scalar_bit_patterns_normal_subnormal(self):
+        cases = [
+            # Normal and subnormal results.
+            (-300.0, "01a56e1fc2f8f359"),
+            (-307.6526555685888, "000fffffffffffe3"),  # Just below min normal.
+            (-307.6526555685887, "0010000000000231"),  # Just above min normal.
+            (-308.0, "000730d67819e8d2"),
+            (-323.0, "0000000000000002"),
+            (-323.3062153431158, "0000000000000001"),  # Min positive subnormal.
+            (-324.0, "0000000000000000"),  # Rounds to zero.
+            (308.0, "7fe1ccf385ebc8a0"),
+            (308.2, "7fec3647f1d600b6"),
+            (309.0, "7ff0000000000000"),  # Overflow to infinity.
+        ]
+
+        for value, expected_hex in cases:
+            with self.subTest(value=value):
+                self.assert_bits(exp10(value), expected_hex)
+
     def test_special_values(self):
         self.assertEqual(exp10(float("inf")), float("inf"))
         self.assertEqual(exp10(float("-inf")), 0.0)
         self.assertTrue(math.isnan(exp10(float("nan"))))
-
-    def test_mathematical_edge_cases(self):
-        """Verifies mathematical thresholds, limits, and floating point corner-cases."""
-        # Zero threshold boundary rules
-        self.assert_bits(exp10(0.0), "0x3ff0000000000000")  # Exactly 1.0
-        self.assert_bits(exp10(-0.0), "0x3ff0000000000000")  # Exactly 1.0
-
-        # Integer boundary powers
-        self.assert_bits(exp10(1.0), "0x4024000000000000")  # Exactly 10.0
-        self.assert_bits(exp10(2.0), "0x4059000000000000")  # Exactly 100.0
-        self.assert_bits(exp10(-1.0), "0x3fb999999999999a")  # Exactly 0.1
-
-        # Subnormal and Underflow Bounds (FCS files with highly compressed/scaled channels)
-        # 10^-300 pushes near the absolute limits of double precision float bounds
-        self.assert_bits(exp10(-300.0), "0x01a56e1fc2f8f359")  # Flirts with the minimal subnormal limit
-
-        # Test the absolute subnormal limit edge case
-        # NOTE: This is a curiosity & would be expected to fail across some machines.
-        #       Leaving here but commented out for deployment.
-        #self._assert_bit_perfect(-323.3062153431158, "0x0000000000000001")
