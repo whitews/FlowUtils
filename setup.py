@@ -38,9 +38,8 @@ if sys.platform == "win32":
     base_compile_args = ["-O2"]
 
     # NOTE: FlowUtils must use clang-cl to correctly compile the exp10 extension
-    # /O2 optimizes speed safely
     # Use strict rounding
-    core_math_compile_args = ["/O2", "/clang:-frounding-math"]
+    core_math_compile_args = ["/clang:-O3", "/clang:-frounding-math"]
     libs = []
 else:
     # GCC/Clang Flags: Disable FMA explicitly to handle the macOS Clang 14+ drift
