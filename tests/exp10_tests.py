@@ -94,3 +94,41 @@ class CoreMathExp10TestCase(unittest.TestCase):
         self.assertEqual(exp10(float("inf")), float("inf"))
         self.assertEqual(exp10(float("-inf")), 0.0)
         self.assertTrue(math.isnan(exp10(float("nan"))))
+
+    def test_non_contiguous_and_transposed_arrays(self):
+        values = np.array(
+            [1.13671875, 99.0, 0.3125, 99.0],
+            dtype=np.float64,
+        )
+        strided = values[::2]
+        expected = np.array(
+            [0x402B665EE2F7005D, 0x40006D9E87713534],
+            dtype=np.uint64,
+        )
+        np.testing.assert_array_equal(exp10(strided).view(np.uint64), expected)
+
+        matrix = np.array(
+            [[1.13671875, 0.0], [0.3125, -1.0]],
+            dtype=np.float64,
+        ).T
+        matrix_expected = np.array(
+            [
+                [0x402B665EE2F7005D, 0x40006D9E87713534],
+                [0x3FF0000000000000, 0x3FB999999999999A],
+            ],
+            dtype=np.uint64,
+        )
+        output = exp10(matrix)
+        np.testing.assert_array_equal(output.view(np.uint64), matrix_expected)
+        self.assertEqual(output.shape, matrix.shape)
+
+    def test_zero_dimensional_and_empty_arrays(self):
+        scalar_array = np.array(0.3125, dtype=np.float64)
+        scalar_output = exp10(scalar_array)
+        self.assertEqual(scalar_output.shape, ())
+        self.assert_bits(scalar_output, "40006d9e87713534")
+
+        empty = np.empty((2, 0), dtype=np.float64)
+        empty_output = exp10(empty)
+        self.assertEqual(empty_output.shape, empty.shape)
+        self.assertEqual(empty_output.size, 0)
